@@ -4,6 +4,7 @@ import type { Team, Player } from "@/lib/use-store";
 import { Pitch } from "@/components/Pitch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Navigation } from "@/components/Navigation";
+import { Maximize2, Minimize2 } from "lucide-react";
 
 export type PlacedPlayer = {
   player: Player;
@@ -18,6 +19,7 @@ export default function LineupView() {
   const [team2Id, setTeam2Id] = useState<number | null>(null);
   const [placedPlayers, setPlacedPlayers] = useState<Record<number, PlacedPlayer>>({});
   const [ballPos, setBallPos] = useState<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
+  const [fullscreen, setFullscreen] = useState(false);
 
   const pitchRef = useRef<HTMLDivElement>(null);
   const ghostRef = useRef<HTMLDivElement | null>(null);
@@ -138,6 +140,29 @@ export default function LineupView() {
     );
   }
 
+  if (fullscreen) {
+    return (
+      <div className="fixed inset-0 z-50 bg-[#1b5e2a]">
+        <Pitch
+          ref={pitchRef}
+          placedPlayers={Object.values(placedPlayers)}
+          onMovePlaced={movePlacedPlayer}
+          onRemovePlaced={removePlacedPlayer}
+          ballPos={ballPos}
+          onMoveBall={(x, y) => setBallPos({ x, y })}
+        />
+        {/* Exit fullscreen button */}
+        <button
+          onClick={() => setFullscreen(false)}
+          className="fixed bottom-5 right-5 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-black/60 hover:bg-black/90 text-white text-sm font-medium backdrop-blur-sm border border-white/20 transition-all"
+        >
+          <Minimize2 className="w-4 h-4" />
+          خروج
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col bg-[#1b5e2a]">
       {/* Team selectors + navigation */}
@@ -145,8 +170,16 @@ export default function LineupView() {
         <div className="w-52">
           <TeamSelector value={team1Id} onChange={setTeam1Id} teams={teams} />
         </div>
-        <div className="flex-1 flex justify-center">
+        <div className="flex-1 flex justify-center gap-3">
           <Navigation />
+          <button
+            onClick={() => setFullscreen(true)}
+            title="Fullscreen"
+            className="flex items-center gap-1.5 px-3 h-7 rounded-md bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors border border-white/15"
+          >
+            <Maximize2 className="w-3.5 h-3.5" />
+            عرض كامل
+          </button>
         </div>
         <div className="w-52">
           <TeamSelector value={team2Id} onChange={setTeam2Id} teams={teams} />
