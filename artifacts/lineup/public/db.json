@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "2026.07.08",
   "teams": [
     {
       "id": 3,
@@ -25,12 +25,69 @@
     }
   ],
   "players": [
-    { "id": 45, "teamId": 3, "name": "ياسين بونو", "position": "GK", "number": 1, "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:5755.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/5755" },
-    { "id": 48, "teamId": 3, "name": "أشرف حكيمي", "position": "DEF", "number": 2, "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:47349.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/47349" },
-    { "id": 49, "teamId": 3, "name": "نصير مزراوي", "position": "DEF", "number": 3, "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:55208.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/55208" },
-    { "id": 50, "teamId": 3, "name": "مروان سعدان", "position": "DEF", "number": 5, "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:39716.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/39716" },
-    { "id": 46, "teamId": 3, "name": "منير المحمدي", "position": "GK", "number": 12, "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:39714.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/39714" },
-    { "id": 51, "teamId": 3, "name": "زكرياء الوحدي", "position": "DEF", "number": 13, "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:110885.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/110885" },
-    { "id": 47, "teamId": 3, "name": "أحمد رضا التكناوتي", "position": "GK", "number": 22, "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:52814.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/52814" }
+    {
+      "id": 45,
+      "teamId": 3,
+      "name": "ياسين بونو",
+      "position": "GK",
+      "number": 1,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:5755.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/5755"
+    },
+    {
+      "id": 48,
+      "teamId": 3,
+      "name": "أشرف حكيمي",
+      "position": "DEF",
+      "number": 2,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:47349.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/47349"
+    },
+    {
+      "id": 49,
+      "teamId": 3,
+      "name": "نصير مزراوي",
+      "position": "DEF",
+      "number": 3,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:55208.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/55208"
+    },
+    {
+      "id": 50,
+      "teamId": 3,
+      "name": "مروان سعدان",
+      "position": "DEF",
+      "number": 5,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:39716.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/39716"
+    },
+    {
+      "id": 46,
+      "teamId": 3,
+      "name": "منير المحمدي",
+      "position": "GK",
+      "number": 12,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:39714.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/39714"
+    },
+    {
+      "id": 51,
+      "teamId": 3,
+      "name": "زكرياء الوحدي",
+      "position": "DEF",
+      "number": 13,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:110885.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/110885"
+    },
+    {
+      "id": 47,
+      "teamId": 3,
+      "name": "أحمد رضا التكناوتي",
+      "position": "GK",
+      "number": 22,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:52814.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/52814"
+    },
+    {
+      "id": 52,
+      "name": "عيسى ديوب",
+      "teamId": 3,
+      "position": "DEF",
+      "number": 14,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:39807.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/39807"
+    }
   ]
 }
