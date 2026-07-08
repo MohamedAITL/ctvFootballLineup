@@ -144,6 +144,16 @@ export default function LineupView() {
     });
   }, []);
 
+  const clearTeam = useCallback((teamId: number) => {
+    setPlacedPlayers(prev => {
+      const next = { ...prev };
+      Object.values(next).forEach(pp => {
+        if (pp.player.teamId === teamId) delete next[pp.player.id];
+      });
+      return next;
+    });
+  }, []);
+
   if (isLoadingTeams) {
     return (
       <div className="h-screen w-screen flex items-center justify-center" style={{ background: "#1b5e2a" }}>
@@ -215,6 +225,7 @@ export default function LineupView() {
           side="left"
           onDragStart={startDrag}
           placedIds={placedPlayers}
+          onClear={clearTeam}
         />
 
         {/* Pitch — takes remaining space */}
@@ -234,6 +245,7 @@ export default function LineupView() {
           side="right"
           onDragStart={startDrag}
           placedIds={placedPlayers}
+          onClear={clearTeam}
         />
       </div>
     </div>
@@ -273,11 +285,13 @@ function TeamPanel({
   side,
   onDragStart,
   placedIds,
+  onClear,
 }: {
   team?: Team;
   side: "left" | "right";
   onDragStart: (player: Player, teamColor: string, e: React.PointerEvent) => void;
   placedIds: Record<number, PlacedPlayer>;
+  onClear: (teamId: number) => void;
 }) {
   const { data: players = [] } = useListTeamPlayers(team?.id || 0);
 
@@ -332,6 +346,14 @@ function TeamPanel({
               <div className="text-white font-arabic font-bold text-base leading-tight truncate">{team.nameAr}</div>
               <div className="text-white/35 text-[10px] tracking-widest uppercase mt-0.5">{team.name}</div>
             </div>
+            <button
+              onClick={() => onClear(team.id)}
+              title="مسح اللاعبين / Clear players"
+              className="shrink-0 flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium text-white/40 hover:text-white hover:bg-white/10 transition-colors border border-white/10 hover:border-white/25"
+            >
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+              مسح
+            </button>
           </div>
 
           {/* Coach */}
