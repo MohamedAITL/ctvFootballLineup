@@ -140,12 +140,12 @@ export default function LineupView() {
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col bg-[#1b5e2a]">
       {/* Top bar: selectors + navigation */}
-      <div className="flex items-center shrink-0 h-12 bg-black/80 border-b border-white/10 z-30 px-3 gap-2">
+      <div className="flex items-center shrink-0 h-16 bg-black/90 border-b border-white/10 z-30 px-3 gap-2">
         <div className="w-52">
           <TeamSelector value={team1Id} onChange={setTeam1Id} teams={teams} />
         </div>
-        <div className="flex-1 flex flex-col items-center justify-center gap-0.5">
-          <img src="/logo.png" alt="Logo" className="h-5 object-contain opacity-80" />
+        <div className="flex-1 flex flex-col items-center justify-center gap-1">
+          <img src="/logo.png" alt="Logo" className="h-8 object-contain" style={{ filter: "brightness(0) invert(1)" }} />
           <Navigation />
         </div>
         <div className="w-52">
