@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Football Lineup"
+version = "1.0.0"
+id = "artifacts/lineup"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22615
+
+[services.development]
+run = "pnpm --filter @workspace/lineup run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/lineup", "run", "build" ]
+publicDir = "artifacts/lineup/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22615"
+BASE_PATH = "/"
