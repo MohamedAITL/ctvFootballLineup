@@ -23,7 +23,7 @@ export default function LineupView() {
 
   const pitchRef = useRef<HTMLDivElement>(null);
   const ghostRef = useRef<HTMLDivElement | null>(null);
-  const dragStateRef = useRef<{ player: Player; teamColor: string } | null>(null);
+  const dragStateRef = useRef<{ player: Player; teamColor: string; startX: number; startY: number } | null>(null);
 
   useEffect(() => {
     if (teams.length >= 2 && !team1Id && !team2Id) {
@@ -58,28 +58,7 @@ export default function LineupView() {
     dragStateRef.current = null;
   }, []);
 
-  useEffect(() => {
-    const onMove = (e: PointerEvent) => {
-      if (!ghostRef.current) return;
-      ghostRef.current.style.left = `${e.clientX}px`;
-      ghostRef.current.style.top = `${e.clientY}px`;
-    };
-    const onUp = (e: PointerEvent) => {
-      if (!ghostRef.current) return;
-      dropOnPitch(e.clientX, e.clientY);
-      removeGhost();
-    };
-    document.addEventListener("pointermove", onMove);
-    document.addEventListener("pointerup", onUp);
-    return () => {
-      document.removeEventListener("pointermove", onMove);
-      document.removeEventListener("pointerup", onUp);
-    };
-  }, [dropOnPitch, removeGhost]);
-
-  const startDrag = useCallback((player: Player, teamColor: string, e: React.PointerEvent) => {
-    e.preventDefault();
-    dragStateRef.current = { player, teamColor };
+  const createGhost = useCallback((player: Player, teamColor: string, x: number, y: number) => {
     const ghost = document.createElement("div");
     ghost.style.cssText = [
       "position:fixed",
@@ -97,8 +76,8 @@ export default function LineupView() {
       "font-size:14px",
       "font-family:sans-serif",
       "transform:translate(-50%,-50%)",
-      `left:${e.clientX}px`,
-      `top:${e.clientY}px`,
+      `left:${x}px`,
+      `top:${y}px`,
       "box-shadow:0 8px 32px rgba(0,0,0,0.7)",
       "border:3px solid rgba(255,255,255,0.95)",
       "opacity:0.9",
@@ -106,6 +85,45 @@ export default function LineupView() {
     ghost.textContent = player.number?.toString() || player.name[0];
     document.body.appendChild(ghost);
     ghostRef.current = ghost;
+  }, []);
+
+  useEffect(() => {
+    const DRAG_THRESHOLD = 8;
+    const onMove = (e: PointerEvent) => {
+      const ds = dragStateRef.current;
+      if (!ds) return;
+      // Create ghost only after finger has moved enough (prevents ghost on scroll)
+      if (!ghostRef.current) {
+        const dx = e.clientX - ds.startX;
+        const dy = e.clientY - ds.startY;
+        if (Math.sqrt(dx * dx + dy * dy) < DRAG_THRESHOLD) return;
+        createGhost(ds.player, ds.teamColor, e.clientX, e.clientY);
+        return;
+      }
+      ghostRef.current.style.left = `${e.clientX}px`;
+      ghostRef.current.style.top = `${e.clientY}px`;
+    };
+    const onUp = (e: PointerEvent) => {
+      if (!dragStateRef.current) return;
+      if (ghostRef.current) {
+        dropOnPitch(e.clientX, e.clientY);
+        removeGhost();
+      } else {
+        dragStateRef.current = null;
+      }
+    };
+    document.addEventListener("pointermove", onMove);
+    document.addEventListener("pointerup", onUp);
+    return () => {
+      document.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerup", onUp);
+    };
+  }, [dropOnPitch, removeGhost, createGhost]);
+
+  const startDrag = useCallback((player: Player, teamColor: string, e: React.PointerEvent) => {
+    e.preventDefault();
+    dragStateRef.current = { player, teamColor, startX: e.clientX, startY: e.clientY };
+    // Ghost is created in onMove once threshold is crossed
   }, []);
 
   const movePlacedPlayer = useCallback((playerId: number, x: number, y: number) => {
