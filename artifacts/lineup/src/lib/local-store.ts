@@ -25,6 +25,8 @@ export type PlayerInput = Omit<Player, "id">;
 const TEAMS_KEY = "lineup_teams";
 const PLAYERS_KEY = "lineup_players";
 const STORE_EVENT = "lineup_store_change";
+const SEED_VERSION_KEY = "lineup_seed_v";
+const SEED_VERSION = "2";
 
 const SEED_TEAMS: Team[] = [
   {
@@ -121,11 +123,14 @@ const SEED_PLAYERS: Player[] = [
 ];
 
 function seed() {
-  if (!localStorage.getItem(TEAMS_KEY)) {
-    localStorage.setItem(TEAMS_KEY, JSON.stringify(SEED_TEAMS));
-  }
-  if (!localStorage.getItem(PLAYERS_KEY)) {
-    localStorage.setItem(PLAYERS_KEY, JSON.stringify(SEED_PLAYERS));
+  if (localStorage.getItem(SEED_VERSION_KEY) !== SEED_VERSION) {
+    const existing = parse<Team>(TEAMS_KEY);
+    const existingPlayers = parse<Player>(PLAYERS_KEY);
+    const userTeams = existing.filter((t) => !SEED_TEAMS.find((s) => s.id === t.id));
+    const userPlayers = existingPlayers.filter((p) => !SEED_PLAYERS.find((s) => s.id === p.id));
+    localStorage.setItem(TEAMS_KEY, JSON.stringify([...SEED_TEAMS, ...userTeams]));
+    localStorage.setItem(PLAYERS_KEY, JSON.stringify([...SEED_PLAYERS, ...userPlayers]));
+    localStorage.setItem(SEED_VERSION_KEY, SEED_VERSION);
   }
 }
 

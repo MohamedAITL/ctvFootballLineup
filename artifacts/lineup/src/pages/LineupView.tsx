@@ -247,66 +247,84 @@ function TeamPanel({
 
   return (
     <div
-      className="h-full flex flex-col shrink-0 bg-black/80 border-white/10 z-20"
+      className="h-full flex flex-col shrink-0 z-20"
       style={{
-        width: 220,
-        borderRight: isLeft ? "1px solid rgba(255,255,255,0.08)" : undefined,
-        borderLeft: !isLeft ? "1px solid rgba(255,255,255,0.08)" : undefined,
+        width: 260,
+        background: "linear-gradient(180deg, #0d0d0d 0%, #111 100%)",
+        borderRight: isLeft ? "1px solid rgba(255,255,255,0.07)" : undefined,
+        borderLeft: !isLeft ? "1px solid rgba(255,255,255,0.07)" : undefined,
       }}
     >
-      {/* Team identity */}
+      {/* Team header */}
       {team && (
         <div
-          className="flex items-center gap-2 px-3 py-2 shrink-0 border-b border-white/8"
-          style={{ flexDirection: isLeft ? "row" : "row-reverse" }}
+          className="shrink-0 px-4 pt-4 pb-3"
+          style={{ borderBottom: `1px solid ${primaryColor}30` }}
         >
           <div
-            className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center overflow-hidden"
-            style={{ background: `${primaryColor}22`, border: `2px solid ${primaryColor}55` }}
+            className="flex items-center gap-3"
+            style={{ flexDirection: isLeft ? "row" : "row-reverse" }}
           >
-            {team.logoUrl ? (
-              <img src={team.logoUrl} alt={team.name} className="w-6 h-6 object-contain" />
-            ) : (
-              <span className="text-white font-arabic text-sm font-bold leading-none">
-                {team.nameAr.charAt(0)}
-              </span>
-            )}
-          </div>
-          <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
-            <div className="text-white font-arabic font-bold text-sm leading-tight truncate">{team.nameAr}</div>
-            <div className="text-white/35 text-[9px] tracking-wider uppercase truncate">{team.name}</div>
+            <div
+              className="w-11 h-11 rounded-full shrink-0 flex items-center justify-center overflow-hidden"
+              style={{
+                background: `${primaryColor}20`,
+                border: `2px solid ${primaryColor}60`,
+                boxShadow: `0 0 16px ${primaryColor}30`,
+              }}
+            >
+              {team.logoUrl ? (
+                <img src={team.logoUrl} alt={team.name} className="w-8 h-8 object-contain" />
+              ) : (
+                <span className="text-white font-arabic text-base font-bold leading-none">
+                  {team.nameAr.charAt(0)}
+                </span>
+              )}
+            </div>
+            <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
+              <div className="text-white font-arabic font-bold text-base leading-tight truncate">{team.nameAr}</div>
+              <div className="text-white/35 text-[10px] tracking-widest uppercase mt-0.5">{team.name}</div>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Divider */}
-      <div className="mx-3 mb-1 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }} />
-
       {/* Player list */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide min-h-0 py-1">
+      <div className="flex-1 overflow-y-auto min-h-0 py-2 px-2" style={{ scrollbarWidth: "none" }}>
         {!team ? null : players.length === 0 ? (
           <div className="h-full flex items-center justify-center">
-            <span className="text-white/25 text-xs font-arabic">لا يوجد لاعبون</span>
+            <span className="text-white/20 text-sm font-arabic">لا يوجد لاعبون</span>
           </div>
         ) : (
           POSITIONS.map((pos) => {
             const posPlayers = groupedPlayers[pos as keyof typeof groupedPlayers];
             if (posPlayers.length === 0) return null;
             return (
-              <div key={pos} className="mb-1">
-                <div className="px-3 py-0.5" style={{ textAlign: isLeft ? "left" : "right" }}>
-                  <span className="text-[9px] font-bold text-white/30 tracking-widest uppercase">{pos}</span>
+              <div key={pos} className="mb-3">
+                {/* Position label */}
+                <div
+                  className="px-1 pb-1"
+                  style={{ textAlign: isLeft ? "left" : "right" }}
+                >
+                  <span
+                    className="text-[10px] font-black tracking-[0.2em] uppercase px-2 py-0.5 rounded"
+                    style={{ color: primaryColor, background: `${primaryColor}18` }}
+                  >
+                    {pos}
+                  </span>
                 </div>
-                {posPlayers.map((p) => (
-                  <PlayerRow
-                    key={p.id}
-                    player={p}
-                    primaryColor={primaryColor}
-                    side={side}
-                    onDragStart={onDragStart}
-                    isPlaced={!!placedIds[p.id]}
-                  />
-                ))}
+                <div className="flex flex-col gap-1.5">
+                  {posPlayers.map((p) => (
+                    <PlayerCard
+                      key={p.id}
+                      player={p}
+                      primaryColor={primaryColor}
+                      side={side}
+                      onDragStart={onDragStart}
+                      isPlaced={!!placedIds[p.id]}
+                    />
+                  ))}
+                </div>
               </div>
             );
           })
@@ -316,31 +334,37 @@ function TeamPanel({
       {/* Coach footer */}
       {team && (
         <div
-          className="shrink-0 border-t px-4 py-3"
-          style={{ borderTopColor: `${primaryColor}40` }}
+          className="shrink-0 px-4 py-4"
+          style={{ borderTop: `1px solid ${primaryColor}25` }}
         >
-          <div className="text-[10px] font-bold text-white/30 tracking-widest uppercase mb-2"
-            style={{ textAlign: isLeft ? "left" : "right" }}>
-            المدرب / Coach
+          <div
+            className="text-[10px] font-black tracking-[0.18em] uppercase mb-3"
+            style={{ color: `${primaryColor}80`, textAlign: isLeft ? "left" : "right" }}
+          >
+            المدرب · Coach
           </div>
           <div className="flex items-center gap-3" style={{ flexDirection: isLeft ? "row" : "row-reverse" }}>
             <div
-              className="w-14 h-14 rounded-full shrink-0 flex items-center justify-center overflow-hidden border-2"
-              style={{ borderColor: `${primaryColor}80`, background: `${primaryColor}25` }}
+              className="w-14 h-14 rounded-full shrink-0 flex items-center justify-center overflow-hidden"
+              style={{
+                border: `2px solid ${primaryColor}60`,
+                background: `${primaryColor}20`,
+                boxShadow: `0 0 12px ${primaryColor}25`,
+              }}
             >
               {team.coachImageUrl ? (
                 <img src={team.coachImageUrl} alt={team.coachName || "Coach"} className="w-full h-full object-cover" />
               ) : (
-                <span className="text-white/50 text-base font-bold">
+                <span className="text-white/40 text-lg font-bold">
                   {team.coachName ? team.coachName.charAt(0) : "؟"}
                 </span>
               )}
             </div>
             <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
               {team.coachName ? (
-                <div className="text-white font-arabic font-bold text-sm leading-tight">{team.coachName}</div>
+                <div className="text-white font-arabic font-bold text-sm leading-snug">{team.coachName}</div>
               ) : (
-                <div className="text-white/30 text-sm font-arabic italic">لم يُضف بعد</div>
+                <div className="text-white/25 text-sm font-arabic">لم يُضف بعد</div>
               )}
             </div>
           </div>
@@ -350,7 +374,7 @@ function TeamPanel({
   );
 }
 
-function PlayerRow({
+function PlayerCard({
   player,
   primaryColor,
   side,
@@ -363,101 +387,85 @@ function PlayerRow({
   onDragStart: (player: Player, teamColor: string, e: React.PointerEvent) => void;
   isPlaced: boolean;
 }) {
-  const initials = player.name
-    .split(" ")
-    .map((n) => n[0])
-    .slice(0, 2)
-    .join("");
   const isLeft = side === "left";
   const num = player.number ?? "–";
 
   return (
     <div
       onPointerDown={(e) => onDragStart(player, primaryColor, e)}
-      className="flex items-center mx-1.5 mb-1 select-none cursor-grab active:cursor-grabbing group"
+      className="relative select-none cursor-grab active:cursor-grabbing group rounded-2xl overflow-hidden"
       style={{
         touchAction: "none",
-        opacity: isPlaced ? 0.3 : 1,
-        transition: "opacity 0.2s",
-        flexDirection: isLeft ? "row" : "row-reverse",
+        opacity: isPlaced ? 0.28 : 1,
+        transition: "opacity 0.2s, transform 0.15s",
+        background: `linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.35) 100%)`,
+        border: `1px solid ${primaryColor}22`,
+        boxShadow: isPlaced ? "none" : `0 3px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)`,
       }}
     >
-      {/* Jersey number — prominent, outside the card */}
+      {/* Colored left/right edge */}
       <div
-        className="shrink-0 w-9 flex items-center font-black text-lg leading-none"
+        className="absolute top-0 bottom-0 w-1"
         style={{
-          justifyContent: isLeft ? "flex-end" : "flex-start",
-          paddingRight: isLeft ? 6 : 0,
-          paddingLeft: isLeft ? 0 : 6,
-          color: primaryColor,
-          textShadow: `0 0 12px ${primaryColor}88`,
-          minWidth: 36,
+          [isLeft ? "left" : "right"]: 0,
+          background: `linear-gradient(to bottom, ${primaryColor}, ${primaryColor}55)`,
         }}
-      >
-        {num}
-      </div>
+      />
 
-      {/* Card */}
+      {/* Hover tint */}
       <div
-        className="flex-1 relative overflow-hidden rounded-xl group-hover:brightness-110 transition-all"
-        style={{
-          background: `linear-gradient(135deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.5) 100%)`,
-          border: `1px solid ${primaryColor}28`,
-          boxShadow: isPlaced ? "none" : `0 2px 8px rgba(0,0,0,0.35)`,
-        }}
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl"
+        style={{ background: `${primaryColor}12` }}
+      />
+
+      {/* Inner layout */}
+      <div
+        className="relative flex items-center gap-3 px-3 py-2.5"
+        style={{ flexDirection: isLeft ? "row" : "row-reverse" }}
       >
-        {/* Accent stripe */}
+        {/* Photo */}
         <div
-          className="absolute top-0 bottom-0 w-[3px]"
+          className="w-12 h-12 rounded-xl shrink-0 overflow-hidden flex items-center justify-center"
           style={{
-            [isLeft ? "left" : "right"]: 0,
-            background: `linear-gradient(to bottom, ${primaryColor}, ${primaryColor}44)`,
+            background: `linear-gradient(135deg, ${primaryColor}bb, ${primaryColor}44)`,
+            boxShadow: `0 0 0 2px ${primaryColor}35`,
           }}
-        />
-
-        {/* Hover glow */}
-        <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-          style={{ background: `linear-gradient(135deg, ${primaryColor}14 0%, transparent 60%)` }}
-        />
-
-        {/* Content */}
-        <div
-          className="relative flex items-center gap-2 px-2.5 py-1.5"
-          style={{ flexDirection: isLeft ? "row" : "row-reverse" }}
         >
-          {/* Avatar */}
+          {player.imageUrl ? (
+            <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-white font-arabic font-extrabold text-base leading-none">
+              {player.name.charAt(0)}
+            </span>
+          )}
+        </div>
+
+        {/* Text */}
+        <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
+          <div className="text-white font-arabic font-bold text-sm leading-snug truncate">
+            {player.name}
+          </div>
           <div
-            className="w-9 h-9 rounded-lg shrink-0 flex items-center justify-center overflow-hidden"
-            style={{
-              background: `linear-gradient(135deg, ${primaryColor}cc, ${primaryColor}66)`,
-              boxShadow: `0 0 0 1.5px ${primaryColor}44`,
-            }}
+            className="flex items-center gap-1.5 mt-0.5"
+            style={{ justifyContent: isLeft ? "flex-start" : "flex-end" }}
           >
-            {player.imageUrl ? (
-              <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover" />
-            ) : (
-              <span className="font-arabic text-white font-extrabold text-xs">{initials}</span>
+            {isPlaced && (
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_5px_#34d399]" />
             )}
           </div>
+        </div>
 
-          {/* Name + position */}
-          <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
-            <div className="text-white font-bold text-xs font-arabic truncate leading-tight">
-              {player.name}
-            </div>
-            <div
-              className="flex items-center gap-1 mt-0.5"
-              style={{ justifyContent: isLeft ? "flex-start" : "flex-end" }}
-            >
-              <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: `${primaryColor}aa` }}>
-                {player.position}
-              </span>
-              {isPlaced && (
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 shadow-[0_0_4px_#34d399]" />
-              )}
-            </div>
-          </div>
+        {/* Number badge */}
+        <div
+          className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center font-black text-lg"
+          style={{
+            background: `${primaryColor}18`,
+            color: primaryColor,
+            border: `1px solid ${primaryColor}30`,
+            textShadow: `0 0 10px ${primaryColor}80`,
+          }}
+        >
+          {num}
         </div>
       </div>
     </div>

@@ -35,6 +35,7 @@ function useMutation<TArgs>(fn: (args: TArgs) => void) {
 function useStoreValue<T>(read: () => T): T {
   const [val, setVal] = useState<T>(read);
   useEffect(() => {
+    setVal(read()); // re-read whenever `read` identity changes (e.g. teamId changed)
     return onStoreChange(() => setVal(read()));
   }, [read]);
   return val;
