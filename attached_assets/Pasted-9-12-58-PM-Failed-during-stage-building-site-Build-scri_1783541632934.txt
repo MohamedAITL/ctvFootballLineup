@@ -1,0 +1,63 @@
+9:12:58 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2
+9:12:57 PM: Netlify Build                                                 
+9:12:57 PM: ────────────────────────────────────────────────────────────────
+9:12:57 PM: ​
+9:12:57 PM: ❯ Version
+9:12:57 PM:   @netlify/build 36.1.2
+9:12:57 PM: ​
+9:12:57 PM: ❯ Flags
+9:12:57 PM:   accountId: 635843737b36793327534c3f
+9:12:57 PM:   baseRelDir: true
+9:12:57 PM:   buildId: 6a4eaf1b5949a419e098df1c
+9:12:57 PM:   deployId: 6a4eaf1e5949a419e098df1e
+9:12:57 PM: ​
+9:12:57 PM: ❯ Current directory
+9:12:57 PM:   /opt/build/repo
+9:12:57 PM: ​
+9:12:57 PM: ❯ Config file
+9:12:57 PM:   /opt/build/repo/netlify.toml
+9:12:57 PM: ​
+9:12:57 PM: ❯ Context
+9:12:57 PM:   production
+9:12:57 PM: ​
+9:12:57 PM: build.command from netlify.toml                               
+9:12:57 PM: ────────────────────────────────────────────────────────────────
+9:12:57 PM: ​
+9:12:57 PM: $ pnpm --filter @workspace/mockup-sandbox... run build
+9:12:57 PM: > @workspace/mockup-sandbox@2.0.0 build /opt/build/repo/artifacts/mockup-sandbox
+9:12:57 PM: > vite build
+9:12:57 PM: failed to load config from /opt/build/repo/artifacts/mockup-sandbox/vite.config.ts
+9:12:57 PM: error during build:
+9:12:57 PM: Error: PORT environment variable is required but was not provided.
+9:12:57 PM:     at file:///opt/build/repo/artifacts/mockup-sandbox/node_modules/.vite-temp/vite.config.ts.timestamp-1783541577789-67775fd4f3fdf.mjs:145:9
+9:12:57 PM:     at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+9:12:57 PM:     at async node:internal/modules/esm/loader:643:26
+9:12:57 PM:     at async loadConfigFromBundledFile (file:///opt/build/repo/node_modules/.pnpm/vite@7.3.6_@types+node@25.9.4_jiti@2.7.0_lightningcss@1.32.0_tsx@4.23.0_yaml@2.9.0/node_modules/vite/dist/node/chunks/config.js:35996:12)
+9:12:57 PM:     at async bundleAndLoadConfigFile (file:///opt/build/repo/node_modules/.pnpm/vite@7.3.6_@types+node@25.9.4_jiti@2.7.0_lightningcss@1.32.0_tsx@4.23.0_yaml@2.9.0/node_modules/vite/dist/node/chunks/config.js:35884:17)
+9:12:57 PM:     at async loadConfigFromFile (file:///opt/build/repo/node_modules/.pnpm/vite@7.3.6_@types+node@25.9.4_jiti@2.7.0_lightningcss@1.32.0_tsx@4.23.0_yaml@2.9.0/node_modules/vite/dist/node/chunks/config.js:35851:42)
+9:12:57 PM:     at async resolveConfig (file:///opt/build/repo/node_modules/.pnpm/vite@7.3.6_@types+node@25.9.4_jiti@2.7.0_lightningcss@1.32.0_tsx@4.23.0_yaml@2.9.0/node_modules/vite/dist/node/chunks/config.js:35500:22)
+9:12:57 PM:     at async createBuilder (file:///opt/build/repo/node_modules/.pnpm/vite@7.3.6_@types+node@25.9.4_jiti@2.7.0_lightningcss@1.32.0_tsx@4.23.0_yaml@2.9.0/node_modules/vite/dist/node/chunks/config.js:33955:19)
+9:12:57 PM:     at async CAC.<anonymous> (file:///opt/build/repo/node_modules/.pnpm/vite@7.3.6_@types+node@25.9.4_jiti@2.7.0_lightningcss@1.32.0_tsx@4.23.0_yaml@2.9.0/node_modules/vite/dist/node/cli.js:629:10)
+9:12:57 PM: /opt/build/repo/artifacts/mockup-sandbox:
+9:12:57 PM:  ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/mockup-sandbox@2.0.0 build: `vite build`
+9:12:57 PM: Exit status 1
+9:12:57 PM: ​
+9:12:57 PM: "build.command" failed                                        
+9:12:57 PM: ────────────────────────────────────────────────────────────────
+9:12:57 PM: ​
+9:12:57 PM:   Error message
+9:12:57 PM:   Command failed with exit code 1: pnpm --filter @workspace/mockup-sandbox... run build
+9:12:57 PM: ​
+9:12:57 PM:   Error location
+9:12:57 PM:   In build.command from netlify.toml:
+9:12:57 PM:   pnpm --filter @workspace/mockup-sandbox... run build
+9:12:57 PM: ​
+9:12:57 PM:   Resolved config
+9:12:57 PM:   build:
+9:12:57 PM:     command: pnpm --filter @workspace/mockup-sandbox... run build
+9:12:57 PM:     commandOrigin: config
+9:12:57 PM:     publish: /opt/build/repo/artifacts/mockup-sandbox/dist
+9:12:57 PM:     publishOrigin: config
+9:12:58 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+9:12:58 PM: Failing build: Failed to build site
+9:12:58 PM: Finished processing build request in 43.658s
