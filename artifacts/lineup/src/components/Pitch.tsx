@@ -168,27 +168,27 @@ function PlayerToken({
     >
       {/* Photo circle */}
       <div
-        className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center font-bold text-white"
+        className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center font-bold text-white"
         style={{
           backgroundColor: teamColor,
           border: "3px solid rgba(255,255,255,0.95)",
-          boxShadow: `0 4px 16px rgba(0,0,0,0.7), 0 0 0 1px ${teamColor}55`,
+          boxShadow: `0 6px 24px rgba(0,0,0,0.75), 0 0 0 2px ${teamColor}66`,
         }}
       >
         {player.imageUrl ? (
           <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover" />
         ) : (
-          <span className="font-arabic text-lg leading-none">{initials}</span>
+          <span className="font-arabic text-2xl leading-none">{initials}</span>
         )}
       </div>
 
       {/* Number badge */}
       <div
-        className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black text-white"
+        className="absolute -top-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center text-xs font-black text-white"
         style={{
           backgroundColor: teamColor,
-          border: "2px solid white",
-          boxShadow: "0 1px 4px rgba(0,0,0,0.5)",
+          border: "2.5px solid white",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.6)",
         }}
       >
         {player.number ?? "?"}
@@ -196,12 +196,13 @@ function PlayerToken({
 
       {/* Name label */}
       <div
-        className="mt-1.5 text-white text-[11px] font-bold font-arabic px-2 py-0.5 rounded-full whitespace-nowrap"
+        className="mt-2 text-white text-xs font-bold font-arabic px-2.5 py-1 rounded-full whitespace-nowrap"
         style={{
-          background: "rgba(0,0,0,0.82)",
-          backdropFilter: "blur(6px)",
-          border: "1px solid rgba(255,255,255,0.15)",
+          background: "rgba(0,0,0,0.88)",
+          backdropFilter: "blur(8px)",
+          border: "1px solid rgba(255,255,255,0.18)",
           textShadow: "0 1px 3px rgba(0,0,0,0.9)",
+          fontSize: 13,
         }}
       >
         {player.name}

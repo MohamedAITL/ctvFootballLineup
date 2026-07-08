@@ -139,18 +139,8 @@ export default function LineupView() {
 
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col bg-[#1b5e2a]">
-      {/* Brand bar */}
-      <div className="flex items-center justify-center shrink-0 h-10 bg-black z-30 border-b border-white/5">
-        <img
-          src="/logo.png"
-          alt="Logo"
-          className="h-7 object-contain"
-          style={{ filter: "brightness(0) invert(1)", maxWidth: 200 }}
-        />
-      </div>
-
       {/* Team selectors + navigation */}
-      <div className="flex items-center shrink-0 h-11 bg-black/80 border-b border-white/10 z-30 px-3 gap-2">
+      <div className="flex items-center shrink-0 h-11 bg-black/90 border-b border-white/10 z-30 px-3 gap-2">
         <div className="w-52">
           <TeamSelector value={team1Id} onChange={setTeam1Id} teams={teams} />
         </div>
@@ -255,35 +245,73 @@ function TeamPanel({
         borderLeft: !isLeft ? "1px solid rgba(255,255,255,0.07)" : undefined,
       }}
     >
-      {/* Team header */}
+      {/* Team header + coach */}
       {team && (
         <div
-          className="shrink-0 px-4 pt-4 pb-3"
+          className="shrink-0 px-4 pt-3 pb-3"
           style={{ borderBottom: `1px solid ${primaryColor}30` }}
         >
+          {/* Team identity */}
           <div
-            className="flex items-center gap-3"
+            className="flex items-center gap-3 mb-3"
             style={{ flexDirection: isLeft ? "row" : "row-reverse" }}
           >
             <div
-              className="w-11 h-11 rounded-full shrink-0 flex items-center justify-center overflow-hidden"
+              className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center overflow-hidden"
               style={{
                 background: `${primaryColor}20`,
                 border: `2px solid ${primaryColor}60`,
-                boxShadow: `0 0 16px ${primaryColor}30`,
+                boxShadow: `0 0 14px ${primaryColor}30`,
               }}
             >
               {team.logoUrl ? (
-                <img src={team.logoUrl} alt={team.name} className="w-8 h-8 object-contain" />
+                <img src={team.logoUrl} alt={team.name} className="w-7 h-7 object-contain" />
               ) : (
-                <span className="text-white font-arabic text-base font-bold leading-none">
-                  {team.nameAr.charAt(0)}
-                </span>
+                <span className="text-white font-arabic text-sm font-bold leading-none">{team.nameAr.charAt(0)}</span>
               )}
             </div>
             <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
               <div className="text-white font-arabic font-bold text-base leading-tight truncate">{team.nameAr}</div>
               <div className="text-white/35 text-[10px] tracking-widest uppercase mt-0.5">{team.name}</div>
+            </div>
+          </div>
+
+          {/* Coach */}
+          <div
+            className="flex items-center gap-3 rounded-xl px-3 py-2"
+            style={{
+              flexDirection: isLeft ? "row" : "row-reverse",
+              background: `${primaryColor}12`,
+              border: `1px solid ${primaryColor}25`,
+            }}
+          >
+            <div
+              className="w-12 h-12 rounded-full shrink-0 flex items-center justify-center overflow-hidden"
+              style={{
+                border: `2px solid ${primaryColor}55`,
+                background: `${primaryColor}20`,
+              }}
+            >
+              {team.coachImageUrl ? (
+                <img src={team.coachImageUrl} alt={team.coachName || "Coach"} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-white/40 text-base font-bold">
+                  {team.coachName ? team.coachName.charAt(0) : "؟"}
+                </span>
+              )}
+            </div>
+            <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
+              <div
+                className="text-[9px] font-black tracking-[0.18em] uppercase mb-0.5"
+                style={{ color: `${primaryColor}70` }}
+              >
+                المدرب · Coach
+              </div>
+              {team.coachName ? (
+                <div className="text-white font-arabic font-bold text-sm leading-snug truncate">{team.coachName}</div>
+              ) : (
+                <div className="text-white/25 text-sm font-arabic">لم يُضف بعد</div>
+              )}
             </div>
           </div>
         </div>
@@ -301,11 +329,7 @@ function TeamPanel({
             if (posPlayers.length === 0) return null;
             return (
               <div key={pos} className="mb-3">
-                {/* Position label */}
-                <div
-                  className="px-1 pb-1"
-                  style={{ textAlign: isLeft ? "left" : "right" }}
-                >
+                <div className="px-1 pb-1" style={{ textAlign: isLeft ? "left" : "right" }}>
                   <span
                     className="text-[10px] font-black tracking-[0.2em] uppercase px-2 py-0.5 rounded"
                     style={{ color: primaryColor, background: `${primaryColor}18` }}
@@ -330,46 +354,6 @@ function TeamPanel({
           })
         )}
       </div>
-
-      {/* Coach footer */}
-      {team && (
-        <div
-          className="shrink-0 px-4 py-4"
-          style={{ borderTop: `1px solid ${primaryColor}25` }}
-        >
-          <div
-            className="text-[10px] font-black tracking-[0.18em] uppercase mb-3"
-            style={{ color: `${primaryColor}80`, textAlign: isLeft ? "left" : "right" }}
-          >
-            المدرب · Coach
-          </div>
-          <div className="flex items-center gap-3" style={{ flexDirection: isLeft ? "row" : "row-reverse" }}>
-            <div
-              className="w-14 h-14 rounded-full shrink-0 flex items-center justify-center overflow-hidden"
-              style={{
-                border: `2px solid ${primaryColor}60`,
-                background: `${primaryColor}20`,
-                boxShadow: `0 0 12px ${primaryColor}25`,
-              }}
-            >
-              {team.coachImageUrl ? (
-                <img src={team.coachImageUrl} alt={team.coachName || "Coach"} className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-white/40 text-lg font-bold">
-                  {team.coachName ? team.coachName.charAt(0) : "؟"}
-                </span>
-              )}
-            </div>
-            <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
-              {team.coachName ? (
-                <div className="text-white font-arabic font-bold text-sm leading-snug">{team.coachName}</div>
-              ) : (
-                <div className="text-white/25 text-sm font-arabic">لم يُضف بعد</div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
