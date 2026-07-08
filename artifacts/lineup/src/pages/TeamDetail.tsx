@@ -9,7 +9,7 @@ import {
   getGetTeamQueryKey,
   getListTeamPlayersQueryKey 
 } from "@workspace/api-client-react";
-import type { Player } from "@workspace/api-client-react/src/generated/api.schemas";
+import type { Player } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Navigation } from "@/components/Navigation";
 import { Plus, Trash2, Edit, ArrowLeft } from "lucide-react";
@@ -24,8 +24,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export default function TeamDetail() {
   const { id } = useParams();
   const teamId = Number(id);
-  const { data: team, isLoading: isLoadingTeam } = useGetTeam(teamId, { query: { enabled: !!teamId } });
-  const { data: players = [], isLoading: isLoadingPlayers } = useListTeamPlayers(teamId, { query: { enabled: !!teamId } });
+  const { data: team, isLoading: isLoadingTeam } = useGetTeam(teamId, { query: { enabled: !!teamId, queryKey: getGetTeamQueryKey(teamId) } });
+  const { data: players = [], isLoading: isLoadingPlayers } = useListTeamPlayers(teamId, { query: { enabled: !!teamId, queryKey: getListTeamPlayersQueryKey(teamId) } });
   
   const deletePlayer = useDeletePlayer();
   const queryClient = useQueryClient();

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { useListTeams, useCreateTeam, useUpdateTeam, useDeleteTeam, getListTeamsQueryKey } from "@workspace/api-client-react";
-import type { Team } from "@workspace/api-client-react/src/generated/api.schemas";
+import type { Team } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Navigation } from "@/components/Navigation";
 import { Plus, Trash2, Edit, ChevronRight } from "lucide-react";
