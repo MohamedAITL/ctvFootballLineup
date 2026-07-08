@@ -198,16 +198,13 @@ function PlayerToken({
       <div
         className="mt-1.5 text-white text-[11px] font-bold font-arabic px-2 py-0.5 rounded-full whitespace-nowrap"
         style={{
-          maxWidth: 80,
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          background: "rgba(0,0,0,0.75)",
+          background: "rgba(0,0,0,0.82)",
           backdropFilter: "blur(6px)",
           border: "1px solid rgba(255,255,255,0.15)",
           textShadow: "0 1px 3px rgba(0,0,0,0.9)",
         }}
       >
-        {player.name.split(" ").slice(0, 2).join(" ")}
+        {player.name}
       </div>
     </div>
   );
