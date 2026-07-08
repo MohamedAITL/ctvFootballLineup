@@ -140,11 +140,12 @@ export default function LineupView() {
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col bg-[#1b5e2a]">
       {/* Top bar: selectors + navigation */}
-      <div className="flex items-center shrink-0 h-11 bg-black/70 border-b border-white/10 z-30 px-2 gap-2">
+      <div className="flex items-center shrink-0 h-12 bg-black/80 border-b border-white/10 z-30 px-3 gap-2">
         <div className="w-52">
           <TeamSelector value={team1Id} onChange={setTeam1Id} teams={teams} />
         </div>
-        <div className="flex-1 flex justify-center">
+        <div className="flex-1 flex flex-col items-center justify-center gap-0.5">
+          <img src="/logo.png" alt="Logo" className="h-5 object-contain opacity-80" />
           <Navigation />
         </div>
         <div className="w-52">
@@ -337,50 +338,89 @@ function PlayerCard({
   return (
     <div
       onPointerDown={(e) => onDragStart(player, primaryColor, e)}
-      className={[
-        "flex items-center gap-2 mx-2 mb-1 px-2 py-1.5 rounded-lg select-none cursor-grab active:cursor-grabbing transition-opacity",
-        isPlaced ? "opacity-35" : "hover:bg-white/8",
-      ].join(" ")}
+      className="relative mx-2 mb-1.5 rounded-xl overflow-hidden select-none cursor-grab active:cursor-grabbing group"
       style={{
         touchAction: "none",
-        flexDirection: isLeft ? "row" : "row-reverse",
-        background: isPlaced ? "transparent" : "rgba(0,0,0,0.35)",
-        border: "1px solid rgba(255,255,255,0.07)",
+        opacity: isPlaced ? 0.3 : 1,
+        transition: "opacity 0.2s, box-shadow 0.2s",
+        background: `linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%)`,
+        border: `1px solid ${primaryColor}30`,
+        boxShadow: isPlaced ? "none" : `0 2px 12px rgba(0,0,0,0.4)`,
       }}
     >
-      {/* Photo */}
+      {/* Hover glow overlay */}
+      {!isPlaced && (
+        <div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none rounded-xl"
+          style={{ background: `linear-gradient(135deg, ${primaryColor}18 0%, transparent 60%)` }}
+        />
+      )}
+
+      {/* Accent stripe */}
       <div
-        className="w-10 h-10 rounded-lg shrink-0 flex items-center justify-center overflow-hidden"
+        className="absolute top-0 bottom-0 w-[3px] rounded-full"
         style={{
-          backgroundColor: primaryColor,
-          border: `1.5px solid ${primaryColor}99`,
+          [isLeft ? "left" : "right"]: 0,
+          background: `linear-gradient(to bottom, ${primaryColor}, ${primaryColor}55)`,
+        }}
+      />
+
+      {/* Watermark number */}
+      <div
+        className="absolute top-1/2 -translate-y-1/2 font-black leading-none pointer-events-none select-none"
+        style={{
+          [isLeft ? "right" : "left"]: 6,
+          fontSize: 44,
+          color: primaryColor,
+          opacity: 0.12,
+          fontVariantNumeric: "tabular-nums",
         }}
       >
-        {player.imageUrl ? (
-          <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover" />
-        ) : (
-          <span className="font-arabic text-white font-bold text-sm">{initials}</span>
-        )}
+        {player.number ?? "—"}
       </div>
 
-      {/* Name + number */}
-      <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
-        <div className="text-white text-xs font-bold font-arabic truncate leading-tight">
-          {player.name}
-        </div>
+      {/* Content */}
+      <div
+        className="relative flex items-center gap-2.5 px-3 py-2"
+        style={{ flexDirection: isLeft ? "row" : "row-reverse" }}
+      >
+        {/* Avatar */}
         <div
-          className="flex items-center gap-1 mt-0.5"
-          style={{ justifyContent: isLeft ? "flex-start" : "flex-end" }}
+          className="w-11 h-11 rounded-lg shrink-0 flex items-center justify-center overflow-hidden"
+          style={{
+            background: `linear-gradient(135deg, ${primaryColor}cc, ${primaryColor}66)`,
+            boxShadow: `0 0 0 2px ${primaryColor}55`,
+          }}
         >
-          <span
-            className="text-[10px] font-black text-white px-1.5 py-px rounded"
-            style={{ backgroundColor: primaryColor }}
-          >
-            {player.number ?? "—"}
-          </span>
-          {isPlaced && (
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+          {player.imageUrl ? (
+            <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover" />
+          ) : (
+            <span className="font-arabic text-white font-extrabold text-sm tracking-tight">{initials}</span>
           )}
+        </div>
+
+        {/* Text */}
+        <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
+          <div className="text-white font-bold text-xs font-arabic truncate leading-tight tracking-wide">
+            {player.name}
+          </div>
+          <div
+            className="flex items-center gap-1.5 mt-1"
+            style={{ justifyContent: isLeft ? "flex-start" : "flex-end" }}
+          >
+            <span
+              className="text-[10px] font-black text-white px-1.5 py-0.5 rounded-md"
+              style={{ background: `linear-gradient(90deg, ${primaryColor}, ${primaryColor}bb)` }}
+            >
+              #{player.number ?? "—"}
+            </span>
+            <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">
+              {player.position}
+            </span>
+            {isPlaced && (
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 shadow-[0_0_4px_#34d399]" />
+            )}
+          </div>
         </div>
       </div>
     </div>
