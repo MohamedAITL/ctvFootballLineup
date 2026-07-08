@@ -318,31 +318,31 @@ function TeamPanel({
       {/* Coach footer */}
       {team && (
         <div
-          className="shrink-0 border-t border-white/8 px-3 py-2"
-          style={{ borderTopColor: `${primaryColor}30` }}
+          className="shrink-0 border-t px-4 py-3"
+          style={{ borderTopColor: `${primaryColor}40` }}
         >
-          <div className="text-[9px] font-bold text-white/25 tracking-widest uppercase mb-1.5"
+          <div className="text-[10px] font-bold text-white/30 tracking-widest uppercase mb-2"
             style={{ textAlign: isLeft ? "left" : "right" }}>
-            المدرب
+            المدرب / Coach
           </div>
-          <div className="flex items-center gap-2" style={{ flexDirection: isLeft ? "row" : "row-reverse" }}>
+          <div className="flex items-center gap-3" style={{ flexDirection: isLeft ? "row" : "row-reverse" }}>
             <div
-              className="w-9 h-9 rounded-full shrink-0 flex items-center justify-center overflow-hidden border-2"
-              style={{ borderColor: `${primaryColor}60`, background: `${primaryColor}20` }}
+              className="w-14 h-14 rounded-full shrink-0 flex items-center justify-center overflow-hidden border-2"
+              style={{ borderColor: `${primaryColor}80`, background: `${primaryColor}25` }}
             >
               {team.coachImageUrl ? (
                 <img src={team.coachImageUrl} alt={team.coachName || "Coach"} className="w-full h-full object-cover" />
               ) : (
-                <span className="text-white/40 text-xs font-bold">
+                <span className="text-white/50 text-base font-bold">
                   {team.coachName ? team.coachName.charAt(0) : "؟"}
                 </span>
               )}
             </div>
             <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
               {team.coachName ? (
-                <div className="text-white font-arabic font-bold text-xs truncate">{team.coachName}</div>
+                <div className="text-white font-arabic font-bold text-sm leading-tight">{team.coachName}</div>
               ) : (
-                <div className="text-white/25 text-xs font-arabic italic">لم يُضف بعد</div>
+                <div className="text-white/30 text-sm font-arabic italic">لم يُضف بعد</div>
               )}
             </div>
           </div>
