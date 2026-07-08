@@ -17,6 +17,7 @@ export default function LineupView() {
   const [team1Id, setTeam1Id] = useState<number | null>(null);
   const [team2Id, setTeam2Id] = useState<number | null>(null);
   const [placedPlayers, setPlacedPlayers] = useState<Record<number, PlacedPlayer>>({});
+  const [ballPos, setBallPos] = useState<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
 
   const pitchRef = useRef<HTMLDivElement>(null);
   const ghostRef = useRef<HTMLDivElement | null>(null);
@@ -168,6 +169,8 @@ export default function LineupView() {
             placedPlayers={Object.values(placedPlayers)}
             onMovePlaced={movePlacedPlayer}
             onRemovePlaced={removePlacedPlayer}
+            ballPos={ballPos}
+            onMoveBall={setBallPos}
           />
         </div>
 

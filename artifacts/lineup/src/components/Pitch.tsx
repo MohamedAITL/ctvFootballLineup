@@ -5,18 +5,27 @@ interface PitchProps {
   placedPlayers?: PlacedPlayer[];
   onMovePlaced?: (playerId: number, x: number, y: number) => void;
   onRemovePlaced?: (playerId: number) => void;
+  ballPos?: { x: number; y: number } | null;
+  onMoveBall?: (x: number, y: number) => void;
 }
 
 export const Pitch = forwardRef<HTMLDivElement, PitchProps>(function Pitch(
-  { placedPlayers = [], onMovePlaced, onRemovePlaced },
+  { placedPlayers = [], onMovePlaced, onRemovePlaced, ballPos, onMoveBall },
   ref
 ) {
-  const tokenDragRef = useRef<{ playerId: number; startX: number; startY: number } | null>(null);
+  const tokenDragRef = useRef<{ type: "player"; playerId: number; startX: number; startY: number } | { type: "ball"; startX: number; startY: number } | null>(null);
 
   const startTokenDrag = useCallback((playerId: number, e: React.PointerEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    tokenDragRef.current = { playerId, startX: e.clientX, startY: e.clientY };
+    tokenDragRef.current = { type: "player", playerId, startX: e.clientX, startY: e.clientY };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  }, []);
+
+  const startBallDrag = useCallback((e: React.PointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    tokenDragRef.current = { type: "ball", startX: e.clientX, startY: e.clientY };
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   }, []);
 
@@ -28,8 +37,9 @@ export const Pitch = forwardRef<HTMLDivElement, PitchProps>(function Pitch(
     const rect = pitchEl.getBoundingClientRect();
     const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     const y = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
-    onMovePlaced?.(td.playerId, x, y);
-  }, [onMovePlaced, ref]);
+    if (td.type === "player") onMovePlaced?.(td.playerId, x, y);
+    else if (td.type === "ball") onMoveBall?.(x, y);
+  }, [onMovePlaced, onMoveBall, ref]);
 
   const endTokenDrag = useCallback((e: React.PointerEvent) => {
     if (!tokenDragRef.current) return;
@@ -37,7 +47,7 @@ export const Pitch = forwardRef<HTMLDivElement, PitchProps>(function Pitch(
     tokenDragRef.current = null;
     const dx = e.clientX - td.startX;
     const dy = e.clientY - td.startY;
-    if (Math.sqrt(dx * dx + dy * dy) < 5) {
+    if (td.type === "player" && Math.sqrt(dx * dx + dy * dy) < 5) {
       onRemovePlaced?.(td.playerId);
     }
   }, [onRemovePlaced]);
@@ -120,8 +130,33 @@ export const Pitch = forwardRef<HTMLDivElement, PitchProps>(function Pitch(
         />
       ))}
 
+      {/* Ball */}
+      {ballPos && (
+        <div
+          className="absolute cursor-grab active:cursor-grabbing select-none"
+          style={{
+            left: `${ballPos.x * 100}%`,
+            top: `${ballPos.y * 100}%`,
+            transform: "translate(-50%, -50%)",
+            touchAction: "none",
+            zIndex: 25,
+            width: 72,
+            height: 72,
+            filter: "drop-shadow(0 6px 18px rgba(0,0,0,0.7))",
+          }}
+          onPointerDown={startBallDrag}
+        >
+          <img
+            src="/ball.png"
+            alt="ball"
+            style={{ width: "100%", height: "100%", objectFit: "contain", pointerEvents: "none" }}
+            draggable={false}
+          />
+        </div>
+      )}
+
       {/* Empty pitch hint */}
-      {placedPlayers.length === 0 && (
+      {placedPlayers.length === 0 && !ballPos && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <span
             className="text-white/25 text-sm font-sans tracking-widest select-none uppercase"
