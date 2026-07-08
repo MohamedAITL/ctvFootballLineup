@@ -266,7 +266,7 @@ function EditPlayerDialog({ teamId, player, onClose }: { teamId: number, player:
   );
 }
 
-function EditCoachDialog({ team }: { team: { id: number; coachName?: string | null; coachImageUrl?: string | null; primaryColor?: string | null } }) {
+function EditCoachDialog({ team }: { team: { id: number; name: string; nameAr: string; slug: string; logoUrl?: string | null; primaryColor?: string | null; secondaryColor?: string | null; coachName?: string | null; coachImageUrl?: string | null } }) {
   const [open, setOpen] = useState(false);
   const updateTeam = useUpdateTeam();
   const queryClient = useQueryClient();
@@ -282,9 +282,15 @@ function EditCoachDialog({ team }: { team: { id: number; coachName?: string | nu
     updateTeam.mutate({
       id: team.id,
       data: {
+        name: team.name,
+        nameAr: team.nameAr,
+        slug: team.slug,
+        logoUrl: team.logoUrl ?? null,
+        primaryColor: team.primaryColor ?? null,
+        secondaryColor: team.secondaryColor ?? null,
         coachName: formData.coachName || null,
         coachImageUrl: formData.coachImageUrl || null,
-      } as Parameters<typeof updateTeam.mutate>[0]["data"],
+      },
     }, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: getGetTeamQueryKey(team.id) });
