@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
-import { useListTeams, useListTeamPlayers, getListTeamPlayersQueryKey } from "@workspace/api-client-react";
-import type { Team, Player } from "@workspace/api-client-react";
+import { useListTeams, useListTeamPlayers } from "@/lib/use-store";
+import type { Team, Player } from "@/lib/use-store";
 import { Pitch } from "@/components/Pitch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Navigation } from "@/components/Navigation";
@@ -231,9 +231,7 @@ function TeamPanel({
   onDragStart: (player: Player, teamColor: string, e: React.PointerEvent) => void;
   placedIds: Record<number, PlacedPlayer>;
 }) {
-  const { data: players = [] } = useListTeamPlayers(team?.id || 0, {
-    query: { enabled: !!team?.id, queryKey: getListTeamPlayersQueryKey(team?.id || 0) },
-  });
+  const { data: players = [] } = useListTeamPlayers(team?.id || 0);
 
   const groupedPlayers = useMemo(() => {
     const grouped = { GK: [] as Player[], DEF: [] as Player[], MID: [] as Player[], FWD: [] as Player[] };

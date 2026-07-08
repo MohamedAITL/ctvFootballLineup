@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useListTeams, useCreateTeam, useUpdateTeam, useDeleteTeam, getListTeamsQueryKey } from "@workspace/api-client-react";
-import type { Team } from "@workspace/api-client-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useListTeams, useCreateTeam, useUpdateTeam, useDeleteTeam } from "@/lib/use-store";
+import type { Team } from "@/lib/use-store";
 import { Navigation } from "@/components/Navigation";
 import { Plus, Trash2, Edit, ChevronRight } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -14,7 +13,6 @@ import { useToast } from "@/hooks/use-toast";
 export default function TeamList() {
   const { data: teams = [], isLoading } = useListTeams();
   const deleteTeam = useDeleteTeam();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
@@ -25,7 +23,6 @@ export default function TeamList() {
     if (confirm("هل أنت متأكد؟ / Are you sure?")) {
       deleteTeam.mutate({ id }, {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: getListTeamsQueryKey() });
           toast({ title: "Team deleted" });
         }
       });
@@ -116,7 +113,6 @@ export default function TeamList() {
 
 function EditTeamDialog({ team, onClose }: { team: Team, onClose: () => void }) {
   const updateTeam = useUpdateTeam();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -132,7 +128,6 @@ function EditTeamDialog({ team, onClose }: { team: Team, onClose: () => void }) 
     e.preventDefault();
     updateTeam.mutate({ id: team.id, data: formData }, {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: getListTeamsQueryKey() });
         onClose();
         toast({ title: "Team updated" });
       }
@@ -217,7 +212,6 @@ function EditTeamDialog({ team, onClose }: { team: Team, onClose: () => void }) 
 function CreateTeamDialog() {
   const [open, setOpen] = useState(false);
   const createTeam = useCreateTeam();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -232,7 +226,6 @@ function CreateTeamDialog() {
     e.preventDefault();
     createTeam.mutate({ data: formData }, {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: getListTeamsQueryKey() });
         setOpen(false);
         setFormData({ name: "", nameAr: "", slug: "", primaryColor: "#ffffff", secondaryColor: "#000000" });
         toast({ title: "Team created" });

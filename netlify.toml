@@ -7,16 +7,7 @@
   NODE_VERSION = "24"
   NODE_OPTIONS = "--max-old-space-size=4096"
 
-# Proxy /api/* to your deployed API server.
-# Set VITE_API_BASE_URL in Netlify → Site settings → Environment variables
-# to the full URL of your API server (e.g. https://your-api.onrender.com).
-[[redirects]]
-  from = "/api/*"
-  to = "https://placeholder-replace-with-your-api-server.com/api/:splat"
-  status = 200
-  force = true
-
-# SPA fallback — must be last
+# SPA fallback — all routes serve index.html
 [[redirects]]
   from = "/*"
   to = "/index.html"

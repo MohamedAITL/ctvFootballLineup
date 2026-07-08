@@ -1,18 +1,14 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "wouter";
-import { 
-  useGetTeam, 
-  useListTeamPlayers, 
-  useCreatePlayer, 
+import {
+  useGetTeam,
+  useListTeamPlayers,
+  useCreatePlayer,
   useUpdatePlayer,
   useUpdateTeam,
-  useDeletePlayer, 
-  getGetTeamQueryKey,
-  getListTeamsQueryKey,
-  getListTeamPlayersQueryKey 
-} from "@workspace/api-client-react";
-import type { Player } from "@workspace/api-client-react";
-import { useQueryClient } from "@tanstack/react-query";
+  useDeletePlayer,
+} from "@/lib/use-store";
+import type { Player } from "@/lib/use-store";
 import { Navigation } from "@/components/Navigation";
 import { Plus, Trash2, Edit, ArrowLeft } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -26,11 +22,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export default function TeamDetail() {
   const { id } = useParams();
   const teamId = Number(id);
-  const { data: team, isLoading: isLoadingTeam } = useGetTeam(teamId, { query: { enabled: !!teamId, queryKey: getGetTeamQueryKey(teamId) } });
-  const { data: players = [], isLoading: isLoadingPlayers } = useListTeamPlayers(teamId, { query: { enabled: !!teamId, queryKey: getListTeamPlayersQueryKey(teamId) } });
-  
+  const { data: team, isLoading: isLoadingTeam } = useGetTeam(teamId);
+  const { data: players = [], isLoading: isLoadingPlayers } = useListTeamPlayers(teamId);
+
   const deletePlayer = useDeletePlayer();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
@@ -39,7 +34,6 @@ export default function TeamDetail() {
     if (confirm("هل أنت متأكد؟ / Are you sure?")) {
       deletePlayer.mutate({ id: playerId }, {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: getListTeamPlayersQueryKey(teamId) });
           toast({ title: "Player deleted" });
         }
       });
@@ -172,7 +166,6 @@ export default function TeamDetail() {
 
 function EditPlayerDialog({ teamId, player, onClose }: { teamId: number, player: Player, onClose: () => void }) {
   const updatePlayer = useUpdatePlayer();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -195,7 +188,6 @@ function EditPlayerDialog({ teamId, player, onClose }: { teamId: number, player:
       }
     }, {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: getListTeamPlayersQueryKey(teamId) });
         onClose();
         toast({ title: "Player updated" });
       }
@@ -270,7 +262,6 @@ function EditPlayerDialog({ teamId, player, onClose }: { teamId: number, player:
 function EditCoachDialog({ team }: { team: { id: number; name: string; nameAr: string; slug: string; logoUrl?: string | null; primaryColor?: string | null; secondaryColor?: string | null; coachName?: string | null; coachImageUrl?: string | null } }) {
   const [open, setOpen] = useState(false);
   const updateTeam = useUpdateTeam();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -304,8 +295,6 @@ function EditCoachDialog({ team }: { team: { id: number; name: string; nameAr: s
       },
     }, {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: getGetTeamQueryKey(team.id) });
-        queryClient.invalidateQueries({ queryKey: getListTeamsQueryKey() });
         setOpen(false);
         toast({ title: "تم حفظ المدرب" });
       },
@@ -366,7 +355,6 @@ function EditCoachDialog({ team }: { team: { id: number; name: string; nameAr: s
 function CreatePlayerDialog({ teamId }: { teamId: number }) {
   const [open, setOpen] = useState(false);
   const createPlayer = useCreatePlayer();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -388,7 +376,6 @@ function CreatePlayerDialog({ teamId }: { teamId: number }) {
       }
     }, {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: getListTeamPlayersQueryKey(teamId) });
         setOpen(false);
         setFormData({ name: "", position: "MID", number: "", imageUrl: "" });
         toast({ title: "Player added" });
