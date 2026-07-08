@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "wouter";
 import { 
   useGetTeam, 
@@ -8,6 +8,7 @@ import {
   useUpdateTeam,
   useDeletePlayer, 
   getGetTeamQueryKey,
+  getListTeamsQueryKey,
   getListTeamPlayersQueryKey 
 } from "@workspace/api-client-react";
 import type { Player } from "@workspace/api-client-react";
@@ -277,6 +278,16 @@ function EditCoachDialog({ team }: { team: { id: number; name: string; nameAr: s
     coachImageUrl: team.coachImageUrl || "",
   });
 
+  // Sync form data from latest team prop whenever dialog opens
+  useEffect(() => {
+    if (open) {
+      setFormData({
+        coachName: team.coachName || "",
+        coachImageUrl: team.coachImageUrl || "",
+      });
+    }
+  }, [open, team.coachName, team.coachImageUrl]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateTeam.mutate({
@@ -294,8 +305,12 @@ function EditCoachDialog({ team }: { team: { id: number; name: string; nameAr: s
     }, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: getGetTeamQueryKey(team.id) });
+        queryClient.invalidateQueries({ queryKey: getListTeamsQueryKey() });
         setOpen(false);
-        toast({ title: "Coach updated" });
+        toast({ title: "تم حفظ المدرب" });
+      },
+      onError: () => {
+        toast({ title: "فشل الحفظ", description: "حدث خطأ، يرجى المحاولة مجدداً", variant: "destructive" });
       },
     });
   };
