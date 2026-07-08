@@ -145,6 +145,8 @@ export const Pitch = forwardRef<HTMLDivElement, PitchProps>(function Pitch(
             filter: "drop-shadow(0 6px 18px rgba(0,0,0,0.7))",
           }}
           onPointerDown={startBallDrag}
+          onPointerMove={moveToken}
+          onPointerUp={endTokenDrag}
         >
           <img
             src="/ball.png"

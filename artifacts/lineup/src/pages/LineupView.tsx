@@ -25,8 +25,8 @@ export default function LineupView() {
 
   useEffect(() => {
     if (teams.length >= 2 && !team1Id && !team2Id) {
-      setTeam1Id(teams[0].id);
-      setTeam2Id(teams[1].id);
+      setTeam1Id(teams[1].id); // left panel = second team (France)
+      setTeam2Id(teams[0].id); // right panel = first team (Morocco)
     } else if (teams.length === 1 && !team1Id && !team2Id) {
       setTeam1Id(teams[0].id);
       setTeam2Id(teams[0].id);
