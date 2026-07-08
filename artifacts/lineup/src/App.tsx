@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -6,6 +7,7 @@ import NotFound from "@/pages/not-found";
 import LineupView from "@/pages/LineupView";
 import TeamList from "@/pages/TeamList";
 import TeamDetail from "@/pages/TeamDetail";
+import { loadDbJson } from "@/lib/local-store";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +23,8 @@ function Router() {
 }
 
 function App() {
+  useEffect(() => { loadDbJson(); }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>

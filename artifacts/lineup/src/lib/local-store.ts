@@ -26,7 +26,6 @@ const TEAMS_KEY = "lineup_teams";
 const PLAYERS_KEY = "lineup_players";
 const STORE_EVENT = "lineup_store_change";
 const SEED_VERSION_KEY = "lineup_seed_v";
-const SEED_VERSION = "2";
 
 const SEED_TEAMS: Team[] = [
   {
@@ -123,15 +122,49 @@ const SEED_PLAYERS: Player[] = [
 ];
 
 function seed() {
-  if (localStorage.getItem(SEED_VERSION_KEY) !== SEED_VERSION) {
-    const existing = parse<Team>(TEAMS_KEY);
-    const existingPlayers = parse<Player>(PLAYERS_KEY);
-    const userTeams = existing.filter((t) => !SEED_TEAMS.find((s) => s.id === t.id));
-    const userPlayers = existingPlayers.filter((p) => !SEED_PLAYERS.find((s) => s.id === p.id));
-    localStorage.setItem(TEAMS_KEY, JSON.stringify([...SEED_TEAMS, ...userTeams]));
-    localStorage.setItem(PLAYERS_KEY, JSON.stringify([...SEED_PLAYERS, ...userPlayers]));
-    localStorage.setItem(SEED_VERSION_KEY, SEED_VERSION);
+  if (!localStorage.getItem(SEED_VERSION_KEY)) {
+    localStorage.setItem(TEAMS_KEY, JSON.stringify(SEED_TEAMS));
+    localStorage.setItem(PLAYERS_KEY, JSON.stringify(SEED_PLAYERS));
+    localStorage.setItem(SEED_VERSION_KEY, "hardcoded");
   }
+}
+
+export async function loadDbJson(): Promise<void> {
+  try {
+    const res = await fetch("/db.json");
+    if (!res.ok) return;
+    const data = await res.json() as { version?: string; teams?: Team[]; players?: Player[] };
+    const dbKey = `db:${data.version ?? "unknown"}`;
+    if (localStorage.getItem(SEED_VERSION_KEY) === dbKey) return;
+    if (data.teams) localStorage.setItem(TEAMS_KEY, JSON.stringify(data.teams));
+    if (data.players) localStorage.setItem(PLAYERS_KEY, JSON.stringify(data.players));
+    localStorage.setItem(SEED_VERSION_KEY, dbKey);
+    notify();
+  } catch {
+    // db.json not found — fall back to hardcoded seed (already done by seed())
+  }
+}
+
+export function exportData(): void {
+  const payload = {
+    version: new Date().toISOString().slice(0, 10).replace(/-/g, "."),
+    teams: getTeams(),
+    players: getPlayers(),
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "db.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+export function importData(json: string): void {
+  const data = JSON.parse(json) as { version?: string; teams?: Team[]; players?: Player[] };
+  if (data.teams) localStorage.setItem(TEAMS_KEY, JSON.stringify(data.teams));
+  if (data.players) localStorage.setItem(PLAYERS_KEY, JSON.stringify(data.players));
+  if (data.version) localStorage.setItem(SEED_VERSION_KEY, `db:${data.version}`);
+  notify();
 }
 
 function notify() {

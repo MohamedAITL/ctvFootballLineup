@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "wouter";
 import { useListTeams, useCreateTeam, useUpdateTeam, useDeleteTeam } from "@/lib/use-store";
 import type { Team } from "@/lib/use-store";
+import { exportData, importData } from "@/lib/local-store";
 import { Navigation } from "@/components/Navigation";
-import { Plus, Trash2, Edit, ChevronRight } from "lucide-react";
+import { Plus, Trash2, Edit, ChevronRight, Download, Upload } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,8 +15,30 @@ export default function TeamList() {
   const { data: teams = [], isLoading } = useListTeams();
   const deleteTeam = useDeleteTeam();
   const { toast } = useToast();
+  const importRef = useRef<HTMLInputElement>(null);
 
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
+
+  const handleExport = () => {
+    exportData();
+    toast({ title: "Exported db.json" });
+  };
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        importData(ev.target?.result as string);
+        toast({ title: "Data imported successfully" });
+      } catch {
+        toast({ title: "Import failed", description: "Invalid JSON file", variant: "destructive" });
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
   const handleDelete = (id: number, e: React.MouseEvent) => {
     e.preventDefault();
@@ -45,7 +68,28 @@ export default function TeamList() {
             <h1 className="text-4xl font-arabic font-bold mb-2">الفرق</h1>
             <p className="text-white/50 text-sm tracking-widest uppercase">Teams</p>
           </div>
-          <CreateTeamDialog />
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExport}
+              className="border-white/20 text-white/70 hover:text-white hover:bg-white/10 gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Export
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => importRef.current?.click()}
+              className="border-white/20 text-white/70 hover:text-white hover:bg-white/10 gap-2"
+            >
+              <Upload className="w-4 h-4" />
+              Import
+            </Button>
+            <input ref={importRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
+            <CreateTeamDialog />
+          </div>
         </div>
 
         {isLoading ? (

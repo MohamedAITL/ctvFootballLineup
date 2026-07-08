@@ -13,19 +13,12 @@ export const Pitch = forwardRef<HTMLDivElement, PitchProps>(function Pitch(
   { placedPlayers = [], onMovePlaced, onRemovePlaced, ballPos, onMoveBall },
   ref
 ) {
-  const tokenDragRef = useRef<{ type: "player"; playerId: number; startX: number; startY: number } | { type: "ball"; startX: number; startY: number } | null>(null);
+  const tokenDragRef = useRef<{ playerId: number; startX: number; startY: number } | null>(null);
 
   const startTokenDrag = useCallback((playerId: number, e: React.PointerEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    tokenDragRef.current = { type: "player", playerId, startX: e.clientX, startY: e.clientY };
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-  }, []);
-
-  const startBallDrag = useCallback((e: React.PointerEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    tokenDragRef.current = { type: "ball", startX: e.clientX, startY: e.clientY };
+    tokenDragRef.current = { playerId, startX: e.clientX, startY: e.clientY };
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   }, []);
 
@@ -37,9 +30,8 @@ export const Pitch = forwardRef<HTMLDivElement, PitchProps>(function Pitch(
     const rect = pitchEl.getBoundingClientRect();
     const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     const y = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
-    if (td.type === "player") onMovePlaced?.(td.playerId, x, y);
-    else if (td.type === "ball") onMoveBall?.(x, y);
-  }, [onMovePlaced, onMoveBall, ref]);
+    onMovePlaced?.(td.playerId, x, y);
+  }, [onMovePlaced, ref]);
 
   const endTokenDrag = useCallback((e: React.PointerEvent) => {
     if (!tokenDragRef.current) return;
@@ -47,10 +39,31 @@ export const Pitch = forwardRef<HTMLDivElement, PitchProps>(function Pitch(
     tokenDragRef.current = null;
     const dx = e.clientX - td.startX;
     const dy = e.clientY - td.startY;
-    if (td.type === "player" && Math.sqrt(dx * dx + dy * dy) < 5) {
+    if (Math.sqrt(dx * dx + dy * dy) < 5) {
       onRemovePlaced?.(td.playerId);
     }
   }, [onRemovePlaced]);
+
+  // Ball uses native doc listeners — bypasses setPointerCapture confusion entirely
+  const startBallDrag = useCallback((e: React.PointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const pitchEl = (ref as React.RefObject<HTMLDivElement>)?.current;
+    if (!pitchEl) return;
+    const onMove = (me: PointerEvent) => {
+      const rect = pitchEl.getBoundingClientRect();
+      onMoveBall?.(
+        Math.max(0, Math.min(1, (me.clientX - rect.left) / rect.width)),
+        Math.max(0, Math.min(1, (me.clientY - rect.top) / rect.height)),
+      );
+    };
+    const onUp = () => {
+      document.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerup", onUp);
+    };
+    document.addEventListener("pointermove", onMove);
+    document.addEventListener("pointerup", onUp);
+  }, [ref, onMoveBall]);
 
   return (
     <div
@@ -145,8 +158,6 @@ export const Pitch = forwardRef<HTMLDivElement, PitchProps>(function Pitch(
             filter: "drop-shadow(0 6px 18px rgba(0,0,0,0.7))",
           }}
           onPointerDown={startBallDrag}
-          onPointerMove={moveToken}
-          onPointerUp={endTokenDrag}
         >
           <img
             src="/ball.png"

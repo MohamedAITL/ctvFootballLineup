@@ -170,7 +170,7 @@ export default function LineupView() {
             onMovePlaced={movePlacedPlayer}
             onRemovePlaced={removePlacedPlayer}
             ballPos={ballPos}
-            onMoveBall={setBallPos}
+            onMoveBall={(x, y) => setBallPos({ x, y })}
           />
         </div>
 
