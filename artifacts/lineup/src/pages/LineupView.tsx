@@ -138,43 +138,45 @@ export default function LineupView() {
   }
 
   return (
-    <div className="h-screen w-screen overflow-hidden relative">
-      {/* Pitch fills entire screen */}
-      <Pitch
-        ref={pitchRef}
-        placedPlayers={Object.values(placedPlayers)}
-        onMovePlaced={movePlacedPlayer}
-        onRemovePlaced={removePlacedPlayer}
-      />
+    <div className="h-screen w-screen overflow-hidden flex flex-col bg-[#1b5e2a]">
+      {/* Top bar: selectors + navigation */}
+      <div className="flex items-center shrink-0 h-11 bg-black/70 border-b border-white/10 z-30 px-2 gap-2">
+        <div className="w-52">
+          <TeamSelector value={team1Id} onChange={setTeam1Id} teams={teams} />
+        </div>
+        <div className="flex-1 flex justify-center">
+          <Navigation />
+        </div>
+        <div className="w-52">
+          <TeamSelector value={team2Id} onChange={setTeam2Id} teams={teams} />
+        </div>
+      </div>
 
-      {/* ── Left panel — Team 1 ── */}
-      <TeamPanel
-        team={team1}
-        side="left"
-        onDragStart={startDrag}
-        placedIds={placedPlayers}
-        selectorValue={team1Id}
-        onSelectorChange={setTeam1Id}
-        teams={teams}
-      />
+      {/* Main row: left panel | pitch | right panel */}
+      <div className="flex flex-1 min-h-0">
+        <TeamPanel
+          team={team1}
+          side="left"
+          onDragStart={startDrag}
+          placedIds={placedPlayers}
+        />
 
-      {/* ── Right panel — Team 2 ── */}
-      <TeamPanel
-        team={team2}
-        side="right"
-        onDragStart={startDrag}
-        placedIds={placedPlayers}
-        selectorValue={team2Id}
-        onSelectorChange={setTeam2Id}
-        teams={teams}
-      />
+        {/* Pitch — takes remaining space */}
+        <div className="flex-1 relative min-w-0">
+          <Pitch
+            ref={pitchRef}
+            placedPlayers={Object.values(placedPlayers)}
+            onMovePlaced={movePlacedPlayer}
+            onRemovePlaced={removePlacedPlayer}
+          />
+        </div>
 
-      {/* Navigation — centered at top, between the two panels */}
-      <div
-        className="absolute top-3 z-40 flex justify-center"
-        style={{ left: "21%", right: "21%" }}
-      >
-        <Navigation />
+        <TeamPanel
+          team={team2}
+          side="right"
+          onDragStart={startDrag}
+          placedIds={placedPlayers}
+        />
       </div>
     </div>
   );
@@ -182,22 +184,42 @@ export default function LineupView() {
 
 const POSITIONS = ["GK", "DEF", "MID", "FWD"];
 
+function TeamSelector({
+  value,
+  onChange,
+  teams,
+}: {
+  value: number | null;
+  onChange: (id: number) => void;
+  teams: Team[];
+}) {
+  if (!value) return null;
+  return (
+    <Select value={value.toString()} onValueChange={(v) => onChange(Number(v))}>
+      <SelectTrigger className="h-8 text-xs bg-black/40 border-white/15 text-white font-arabic w-full">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent className="bg-[#111] border-white/10 text-white font-arabic z-50">
+        {teams.map((t) => (
+          <SelectItem key={t.id} value={t.id.toString()} className="focus:bg-white/10 text-sm">
+            {t.nameAr}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
 function TeamPanel({
   team,
   side,
   onDragStart,
   placedIds,
-  selectorValue,
-  onSelectorChange,
-  teams,
 }: {
   team?: Team;
   side: "left" | "right";
   onDragStart: (player: Player, teamColor: string, e: React.PointerEvent) => void;
   placedIds: Record<number, PlacedPlayer>;
-  selectorValue: number | null;
-  onSelectorChange: (id: number) => void;
-  teams: Team[];
 }) {
   const { data: players = [] } = useListTeamPlayers(team?.id || 0, {
     query: { enabled: !!team?.id, queryKey: getListTeamPlayersQueryKey(team?.id || 0) },
@@ -217,69 +239,37 @@ function TeamPanel({
 
   return (
     <div
-      className="absolute top-0 h-full flex flex-col z-20"
+      className="h-full flex flex-col shrink-0 bg-black/80 border-white/10 z-20"
       style={{
-        [isLeft ? "left" : "right"]: 0,
-        width: "21%",
-        background: isLeft
-          ? "linear-gradient(to right, rgba(0,0,0,0.88) 65%, rgba(0,0,0,0))"
-          : "linear-gradient(to left, rgba(0,0,0,0.88) 65%, rgba(0,0,0,0))",
+        width: 220,
+        borderRight: isLeft ? "1px solid rgba(255,255,255,0.08)" : undefined,
+        borderLeft: !isLeft ? "1px solid rgba(255,255,255,0.08)" : undefined,
       }}
     >
-      {/* Selector + team identity */}
-      <div className="pt-3 pb-2 px-3 shrink-0">
-        {/* Team dropdown */}
-        {selectorValue && (
-          <Select value={selectorValue.toString()} onValueChange={(v) => onSelectorChange(Number(v))}>
-            <SelectTrigger
-              className="h-8 text-xs bg-black/50 border-white/15 text-white font-arabic w-full mb-2"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="bg-[#111] border-white/10 text-white font-arabic z-50">
-              {teams.map((t) => (
-                <SelectItem key={t.id} value={t.id.toString()} className="focus:bg-white/10 text-sm">
-                  {t.nameAr}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
-
-        {/* Team identity row */}
-        {team && (
+      {/* Team identity */}
+      {team && (
+        <div
+          className="flex items-center gap-2 px-3 py-2 shrink-0 border-b border-white/8"
+          style={{ flexDirection: isLeft ? "row" : "row-reverse" }}
+        >
           <div
-            className="flex items-center gap-2"
-            style={{ flexDirection: isLeft ? "row" : "row-reverse" }}
+            className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center overflow-hidden"
+            style={{ background: `${primaryColor}22`, border: `2px solid ${primaryColor}55` }}
           >
-            {/* Logo */}
-            <div
-              className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center overflow-hidden"
-              style={{
-                background: `${primaryColor}22`,
-                border: `2px solid ${primaryColor}55`,
-              }}
-            >
-              {team.logoUrl ? (
-                <img src={team.logoUrl} alt={team.name} className="w-7 h-7 object-contain" />
-              ) : (
-                <span className="text-white font-arabic text-base font-bold leading-none">
-                  {team.nameAr.charAt(0)}
-                </span>
-              )}
-            </div>
-            {/* Name */}
-            <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
-              <div className="text-white font-arabic font-bold text-sm leading-tight truncate">
-                {team.nameAr}
-              </div>
-              <div className="text-white/35 text-[9px] tracking-wider uppercase truncate">
-                {team.name}
-              </div>
-            </div>
+            {team.logoUrl ? (
+              <img src={team.logoUrl} alt={team.name} className="w-6 h-6 object-contain" />
+            ) : (
+              <span className="text-white font-arabic text-sm font-bold leading-none">
+                {team.nameAr.charAt(0)}
+              </span>
+            )}
           </div>
-        )}
-      </div>
+          <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
+            <div className="text-white font-arabic font-bold text-sm leading-tight truncate">{team.nameAr}</div>
+            <div className="text-white/35 text-[9px] tracking-wider uppercase truncate">{team.name}</div>
+          </div>
+        </div>
+      )}
 
       {/* Divider */}
       <div className="mx-3 mb-1 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }} />
