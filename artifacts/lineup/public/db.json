@@ -20,8 +20,8 @@
       "logoUrl": "https://imagecache.365scores.com/image/upload/f_png,w_64,h_64,c_limit,q_auto:eco,dpr_2,d_Competitors:default1.png/v3/Competitors/5061",
       "primaryColor": "#0b239d",
       "secondaryColor": "#000000",
-      "coachName": null,
-      "coachImageUrl": null
+      "coachName": "ديدييه ديشامب",
+      "coachImageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:889.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/889"
     }
   ],
   "players": [
@@ -88,6 +88,214 @@
       "position": "DEF",
       "number": 14,
       "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:39807.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/39807"
+    },
+    {
+      "id": 53,
+      "name": "بريس سامبا",
+      "teamId": 6,
+      "position": "GK",
+      "number": 1,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:2197.png,r_max,c_thumb,g_face,z_0.65/v40/Athletes/NationalTeam/2197"
+    },
+    {
+      "id": 54,
+      "name": "مايك ماينان",
+      "teamId": 6,
+      "position": "GK",
+      "number": 16,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:2220.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/2220"
+    },
+    {
+      "id": 55,
+      "name": "روبن ريسر",
+      "teamId": 6,
+      "position": "GK",
+      "number": 23,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:115779.png,r_max,c_thumb,g_face,z_0.65/v20/Athletes/NationalTeam/115779"
+    },
+    {
+      "id": 56,
+      "name": "مالو جوستو",
+      "teamId": 6,
+      "position": "DEF",
+      "number": 2,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:82339.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/82339"
+    },
+    {
+      "id": 57,
+      "name": "لوكاس دين",
+      "teamId": 6,
+      "position": "DEF",
+      "number": 3,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:529.png,r_max,c_thumb,g_face,z_0.65/v78/Athletes/NationalTeam/529"
+    },
+    {
+      "id": 58,
+      "name": "دايوت أوباميكانو",
+      "teamId": 6,
+      "position": "DEF",
+      "number": 4,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:45046.png,r_max,c_thumb,g_face,z_0.65/v36/Athletes/NationalTeam/45046"
+    },
+    {
+      "id": 59,
+      "name": "جيوليس كوندي",
+      "teamId": 6,
+      "position": "DEF",
+      "number": 5,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:55138.png,r_max,c_thumb,g_face,z_0.65/v62/Athletes/NationalTeam/55138"
+    },
+    {
+      "id": 60,
+      "name": "ابراهيم كوناتي",
+      "teamId": 6,
+      "position": "DEF",
+      "number": 15,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:48863.png,r_max,c_thumb,g_face,z_0.65/v55/Athletes/NationalTeam/48863"
+    },
+    {
+      "id": 61,
+      "name": "ويليام ساليبا",
+      "teamId": 6,
+      "position": "DEF",
+      "number": 17,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:61467.png,r_max,c_thumb,g_face,z_0.65/v91/Athletes/NationalTeam/61467"
+    },
+    {
+      "id": 62,
+      "name": "ثيو هيرنانديز",
+      "teamId": 6,
+      "position": "DEF",
+      "number": 19,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:41870.png,r_max,c_thumb,g_face,z_0.65/v29/Athletes/NationalTeam/41870"
+    },
+    {
+      "id": 63,
+      "name": "لوكاس هيرنانديز",
+      "teamId": 6,
+      "position": "DEF",
+      "number": 21,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:12660.png,r_max,c_thumb,g_face,z_0.65/v40/Athletes/NationalTeam/12660"
+    },
+    {
+      "id": 64,
+      "name": "ماكسينس لكرواكس",
+      "teamId": 6,
+      "position": "DEF",
+      "number": 26,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:80392.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/80392"
+    },
+    {
+      "id": 65,
+      "name": "كواديو كونيه",
+      "teamId": 6,
+      "position": "MID",
+      "number": 6,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:67364.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/67364"
+    },
+    {
+      "id": 66,
+      "name": "أوريلين تشواميني",
+      "teamId": 6,
+      "position": "MID",
+      "number": 8,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:56328.png,r_max,c_thumb,g_face,z_0.65/v39/Athletes/NationalTeam/56328"
+    },
+    {
+      "id": 67,
+      "name": "نجولو كانتي",
+      "teamId": 6,
+      "position": "MID",
+      "number": 13,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:1911.png,r_max,c_thumb,g_face,z_0.65/v56/Athletes/NationalTeam/1911"
+    },
+    {
+      "id": 68,
+      "name": "ادريان رابيو",
+      "teamId": 6,
+      "position": "MID",
+      "number": 14,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:2221.png,r_max,c_thumb,g_face,z_0.65/v54/Athletes/NationalTeam/2221"
+    },
+    {
+      "id": 69,
+      "name": "وارن زائير إيمري",
+      "teamId": 6,
+      "position": "MID",
+      "number": 18,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:114699.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/114699"
+    },
+    {
+      "id": 70,
+      "name": "ريان شرقي",
+      "teamId": 6,
+      "position": "MID",
+      "number": 24,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:71578.png,r_max,c_thumb,g_face,z_0.65/v57/Athletes/NationalTeam/71578"
+    },
+    {
+      "id": 71,
+      "name": "عثمان ديمبيلي",
+      "teamId": 6,
+      "position": "FWD",
+      "number": 7,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:39779.png,r_max,c_thumb,g_face,z_0.65/v83/Athletes/NationalTeam/39779"
+    },
+    {
+      "id": 72,
+      "name": "ماركوس تورام",
+      "teamId": 6,
+      "position": "FWD",
+      "number": 9,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:50383.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/50383"
+    },
+    {
+      "id": 73,
+      "name": "كيليان مبابي",
+      "teamId": 6,
+      "position": "FWD",
+      "number": 10,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:39820.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/39820"
+    },
+    {
+      "id": 74,
+      "name": "مايكل أوليز",
+      "teamId": 6,
+      "position": "FWD",
+      "number": 11,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:65785.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/65785"
+    },
+    {
+      "id": 75,
+      "name": "برادلي باركولا",
+      "teamId": 6,
+      "position": "FWD",
+      "number": 12,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:102289.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/102289"
+    },
+    {
+      "id": 76,
+      "name": "ديزيري دوي",
+      "teamId": 6,
+      "position": "FWD",
+      "number": 20,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_40,h_40,c_limit,q_auto:eco,dpr_2,d_Athletes:109665.png,r_max,c_thumb,g_face,z_0.65/v29/Athletes/NationalTeam/109665"
+    },
+    {
+      "id": 77,
+      "name": "جون فيليب ماتيتا",
+      "teamId": 6,
+      "position": "FWD",
+      "number": 22,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:45455.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/45455"
+    },
+    {
+      "id": 78,
+      "name": "ماجنيس أكليوش",
+      "teamId": 6,
+      "position": "FWD",
+      "number": 25,
+      "imageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:104249.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/104249"
     }
   ]
 }
