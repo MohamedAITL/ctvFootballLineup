@@ -40,7 +40,7 @@ export default function TeamList() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white p-8 font-sans">
-      <Navigation />
+      <div className="fixed top-4 right-4 z-50"><Navigation /></div>
       
       <div className="max-w-4xl mx-auto pt-16">
         <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-4">

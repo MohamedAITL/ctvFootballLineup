@@ -38,23 +38,20 @@ export default function LineupView() {
   const dropOnPitch = useCallback((clientX: number, clientY: number) => {
     const pitch = pitchRef.current;
     const ds = dragStateRef.current;
-    if (!pitch || !ds) return false;
+    if (!pitch || !ds) return;
     const rect = pitch.getBoundingClientRect();
-    if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) return false;
+    if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) return;
     const x = (clientX - rect.left) / rect.width;
     const y = (clientY - rect.top) / rect.height;
     setPlacedPlayers(prev => ({
       ...prev,
-      [ds.player.id]: { player: ds.player, teamColor: ds.teamColor, x, y }
+      [ds.player.id]: { player: ds.player, teamColor: ds.teamColor, x, y },
     }));
-    return true;
   }, []);
 
   const removeGhost = useCallback(() => {
-    if (ghostRef.current) {
-      ghostRef.current.remove();
-      ghostRef.current = null;
-    }
+    ghostRef.current?.remove();
+    ghostRef.current = null;
     dragStateRef.current = null;
   }, []);
 
@@ -85,8 +82,8 @@ export default function LineupView() {
       "position:fixed",
       "pointer-events:none",
       "z-index:9999",
-      "width:56px",
-      "height:56px",
+      "width:52px",
+      "height:52px",
       "border-radius:50%",
       `background:${teamColor}`,
       "color:white",
@@ -99,9 +96,9 @@ export default function LineupView() {
       "transform:translate(-50%,-50%)",
       `left:${e.clientX}px`,
       `top:${e.clientY}px`,
-      "box-shadow:0 6px 32px rgba(0,0,0,0.7)",
-      "border:3px solid rgba(255,255,255,0.9)",
-      "opacity:0.95",
+      "box-shadow:0 8px 32px rgba(0,0,0,0.7)",
+      "border:3px solid rgba(255,255,255,0.95)",
+      "opacity:0.9",
     ].join(";");
     ghost.textContent = player.number?.toString() || player.name[0];
     document.body.appendChild(ghost);
@@ -109,10 +106,9 @@ export default function LineupView() {
   }, []);
 
   const movePlacedPlayer = useCallback((playerId: number, x: number, y: number) => {
-    setPlacedPlayers(prev => {
-      if (!prev[playerId]) return prev;
-      return { ...prev, [playerId]: { ...prev[playerId], x, y } };
-    });
+    setPlacedPlayers(prev =>
+      prev[playerId] ? { ...prev, [playerId]: { ...prev[playerId], x, y } } : prev
+    );
   }, []);
 
   const removePlacedPlayer = useCallback((playerId: number) => {
@@ -125,8 +121,8 @@ export default function LineupView() {
 
   if (isLoadingTeams) {
     return (
-      <div className="h-screen w-screen bg-[#1b4d24] flex items-center justify-center">
-        <div className="text-white/50 text-xl font-arabic">جاري التحميل...</div>
+      <div className="h-screen w-screen flex items-center justify-center" style={{ background: "#1b5e2a" }}>
+        <span className="text-white/40 text-xl font-arabic">جاري التحميل...</span>
       </div>
     );
   }
@@ -134,16 +130,16 @@ export default function LineupView() {
   if (teams.length === 0) {
     return (
       <div className="h-screen w-screen bg-[#0a0a0a] flex flex-col items-center justify-center gap-4">
-        <Navigation />
+        <div className="fixed top-4 right-4 z-50"><Navigation /></div>
         <h1 className="text-3xl font-arabic text-white">لا توجد فرق</h1>
-        <p className="text-white/50 text-xl">No teams yet</p>
+        <p className="text-white/40">No teams yet — go to Teams to add some</p>
       </div>
     );
   }
 
   return (
     <div className="h-screen w-screen overflow-hidden relative">
-      {/* Pitch fills the entire screen */}
+      {/* Pitch fills entire screen */}
       <Pitch
         ref={pitchRef}
         placedPlayers={Object.values(placedPlayers)}
@@ -151,63 +147,36 @@ export default function LineupView() {
         onRemovePlaced={removePlacedPlayer}
       />
 
-      {/* Navigation */}
-      <div className="absolute top-3 right-4 z-30">
-        <Navigation />
-      </div>
-
-      {/* Team selectors */}
-      <div className="absolute top-3 left-[22%] right-[22%] z-30 flex justify-center gap-8 px-8">
-        <div className="w-52">
-          <TeamSelector value={team1Id} onChange={setTeam1Id} teams={teams} />
-        </div>
-        <div className="w-52">
-          <TeamSelector value={team2Id} onChange={setTeam2Id} teams={teams} />
-        </div>
-      </div>
-
-      {/* Left panel — Team 1 */}
+      {/* ── Left panel — Team 1 ── */}
       <TeamPanel
         team={team1}
         side="left"
         onDragStart={startDrag}
         placedIds={placedPlayers}
+        selectorValue={team1Id}
+        onSelectorChange={setTeam1Id}
+        teams={teams}
       />
 
-      {/* Right panel — Team 2 */}
+      {/* ── Right panel — Team 2 ── */}
       <TeamPanel
         team={team2}
         side="right"
         onDragStart={startDrag}
         placedIds={placedPlayers}
+        selectorValue={team2Id}
+        onSelectorChange={setTeam2Id}
+        teams={teams}
       />
-    </div>
-  );
-}
 
-function TeamSelector({
-  value,
-  onChange,
-  teams,
-}: {
-  value: number | null;
-  onChange: (id: number) => void;
-  teams: Team[];
-}) {
-  if (!value) return null;
-  return (
-    <Select value={value.toString()} onValueChange={(val) => onChange(Number(val))}>
-      <SelectTrigger className="bg-black/60 backdrop-blur border-white/20 text-white font-arabic h-10 text-sm">
-        <SelectValue placeholder="اختر الفريق" />
-      </SelectTrigger>
-      <SelectContent className="bg-[#111] border-white/10 text-white font-arabic">
-        {teams.map((t) => (
-          <SelectItem key={t.id} value={t.id.toString()} className="focus:bg-white/10 focus:text-white">
-            {t.nameAr}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+      {/* Navigation — centered at top, between the two panels */}
+      <div
+        className="absolute top-3 z-40 flex justify-center"
+        style={{ left: "21%", right: "21%" }}
+      >
+        <Navigation />
+      </div>
+    </div>
   );
 }
 
@@ -218,11 +187,17 @@ function TeamPanel({
   side,
   onDragStart,
   placedIds,
+  selectorValue,
+  onSelectorChange,
+  teams,
 }: {
   team?: Team;
   side: "left" | "right";
   onDragStart: (player: Player, teamColor: string, e: React.PointerEvent) => void;
   placedIds: Record<number, PlacedPlayer>;
+  selectorValue: number | null;
+  onSelectorChange: (id: number) => void;
+  teams: Team[];
 }) {
   const { data: players = [] } = useListTeamPlayers(team?.id || 0, {
     query: { enabled: !!team?.id, queryKey: getListTeamPlayersQueryKey(team?.id || 0) },
@@ -231,53 +206,89 @@ function TeamPanel({
   const groupedPlayers = useMemo(() => {
     const grouped = { GK: [] as Player[], DEF: [] as Player[], MID: [] as Player[], FWD: [] as Player[] };
     players.forEach((p) => {
-      const pos = POSITIONS.includes(p.position) ? (p.position as keyof typeof grouped) : "MID";
-      grouped[pos].push(p);
+      const key = POSITIONS.includes(p.position) ? (p.position as keyof typeof grouped) : "MID";
+      grouped[key].push(p);
     });
     return grouped;
   }, [players]);
 
-  const primaryColor = team?.primaryColor || "#1b4d24";
-
-  const panelStyle: React.CSSProperties = {
-    position: "absolute",
-    top: 0,
-    [side]: 0,
-    width: "21%",
-    height: "100%",
-    zIndex: 20,
-    display: "flex",
-    flexDirection: "column",
-    background: side === "left"
-      ? `linear-gradient(to right, rgba(0,0,0,0.82) 70%, transparent)`
-      : `linear-gradient(to left, rgba(0,0,0,0.82) 70%, transparent)`,
-  };
+  const primaryColor = team?.primaryColor || "#1a6b35";
+  const isLeft = side === "left";
 
   return (
-    <div style={panelStyle}>
-      {/* Team header */}
-      {team && (
-        <div className="flex flex-col items-center pt-14 pb-3 px-3 border-b border-white/10">
-          <div
-            className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden mb-2 shadow-xl"
-            style={{ background: `${primaryColor}33`, border: `2px solid ${primaryColor}66` }}
-          >
-            {team.logoUrl ? (
-              <img src={team.logoUrl} alt={team.name} className="w-10 h-10 object-contain" />
-            ) : (
-              <span className="text-2xl font-arabic text-white">{team.nameAr[0]}</span>
-            )}
-          </div>
-          <h2 className="text-lg font-arabic font-bold text-white text-center leading-tight">{team.nameAr}</h2>
-          <p className="text-[10px] text-white/40 tracking-widest uppercase">{team.name}</p>
-        </div>
-      )}
+    <div
+      className="absolute top-0 h-full flex flex-col z-20"
+      style={{
+        [isLeft ? "left" : "right"]: 0,
+        width: "21%",
+        background: isLeft
+          ? "linear-gradient(to right, rgba(0,0,0,0.88) 65%, rgba(0,0,0,0))"
+          : "linear-gradient(to left, rgba(0,0,0,0.88) 65%, rgba(0,0,0,0))",
+      }}
+    >
+      {/* Selector + team identity */}
+      <div className="pt-3 pb-2 px-3 shrink-0">
+        {/* Team dropdown */}
+        {selectorValue && (
+          <Select value={selectorValue.toString()} onValueChange={(v) => onSelectorChange(Number(v))}>
+            <SelectTrigger
+              className="h-8 text-xs bg-black/50 border-white/15 text-white font-arabic w-full mb-2"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-[#111] border-white/10 text-white font-arabic z-50">
+              {teams.map((t) => (
+                <SelectItem key={t.id} value={t.id.toString()} className="focus:bg-white/10 text-sm">
+                  {t.nameAr}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
 
-      {/* Players */}
-      <div className="flex-1 overflow-y-auto py-2 scrollbar-hide">
+        {/* Team identity row */}
+        {team && (
+          <div
+            className="flex items-center gap-2"
+            style={{ flexDirection: isLeft ? "row" : "row-reverse" }}
+          >
+            {/* Logo */}
+            <div
+              className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center overflow-hidden"
+              style={{
+                background: `${primaryColor}22`,
+                border: `2px solid ${primaryColor}55`,
+              }}
+            >
+              {team.logoUrl ? (
+                <img src={team.logoUrl} alt={team.name} className="w-7 h-7 object-contain" />
+              ) : (
+                <span className="text-white font-arabic text-base font-bold leading-none">
+                  {team.nameAr.charAt(0)}
+                </span>
+              )}
+            </div>
+            {/* Name */}
+            <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
+              <div className="text-white font-arabic font-bold text-sm leading-tight truncate">
+                {team.nameAr}
+              </div>
+              <div className="text-white/35 text-[9px] tracking-wider uppercase truncate">
+                {team.name}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Divider */}
+      <div className="mx-3 mb-1 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }} />
+
+      {/* Player list */}
+      <div className="flex-1 overflow-y-auto scrollbar-hide min-h-0">
         {!team ? null : players.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-white/30 text-sm font-arabic">
-            لا يوجد لاعبون
+          <div className="h-full flex items-center justify-center">
+            <span className="text-white/25 text-xs font-arabic">لا يوجد لاعبون</span>
           </div>
         ) : (
           POSITIONS.map((pos) => {
@@ -285,8 +296,13 @@ function TeamPanel({
             if (posPlayers.length === 0) return null;
             return (
               <div key={pos} className="mb-1">
-                <div className="px-3 py-1">
-                  <span className="text-[9px] font-bold text-white/30 tracking-widest uppercase">{pos}</span>
+                <div
+                  className="px-3 py-0.5"
+                  style={{ textAlign: isLeft ? "left" : "right" }}
+                >
+                  <span className="text-[9px] font-bold text-white/30 tracking-widest uppercase">
+                    {pos}
+                  </span>
                 </div>
                 {posPlayers.map((p) => (
                   <PlayerCard
@@ -326,40 +342,55 @@ function PlayerCard({
     .slice(0, 2)
     .join("");
 
+  const isLeft = side === "left";
+
   return (
     <div
       onPointerDown={(e) => onDragStart(player, primaryColor, e)}
       className={[
-        "flex items-center gap-2 mx-2 mb-1 px-2 py-2 rounded-lg select-none cursor-grab active:cursor-grabbing transition-all",
-        isPlaced
-          ? "opacity-40 bg-white/5"
-          : "bg-black/40 hover:bg-black/60 border border-white/10 hover:border-white/20",
+        "flex items-center gap-2 mx-2 mb-1 px-2 py-1.5 rounded-lg select-none cursor-grab active:cursor-grabbing transition-opacity",
+        isPlaced ? "opacity-35" : "hover:bg-white/8",
       ].join(" ")}
-      style={{ touchAction: "none", flexDirection: side === "right" ? "row-reverse" : "row" }}
+      style={{
+        touchAction: "none",
+        flexDirection: isLeft ? "row" : "row-reverse",
+        background: isPlaced ? "transparent" : "rgba(0,0,0,0.35)",
+        border: "1px solid rgba(255,255,255,0.07)",
+      }}
     >
-      {/* Big photo */}
+      {/* Photo */}
       <div
-        className="w-12 h-12 rounded-lg overflow-hidden shrink-0 flex items-center justify-center font-bold text-white text-sm shadow-md"
-        style={{ backgroundColor: primaryColor, border: `1.5px solid ${primaryColor}88` }}
+        className="w-10 h-10 rounded-lg shrink-0 flex items-center justify-center overflow-hidden"
+        style={{
+          backgroundColor: primaryColor,
+          border: `1.5px solid ${primaryColor}99`,
+        }}
       >
         {player.imageUrl ? (
           <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover" />
         ) : (
-          <span className="font-arabic text-base">{initials}</span>
+          <span className="font-arabic text-white font-bold text-sm">{initials}</span>
         )}
       </div>
 
-      {/* Info */}
-      <div className="flex-1 min-w-0" style={{ textAlign: side === "right" ? "right" : "left" }}>
-        <div className="text-white font-bold text-sm leading-tight truncate font-arabic">{player.name}</div>
-        <div className="flex items-center gap-1 mt-0.5" style={{ justifyContent: side === "right" ? "flex-end" : "flex-start" }}>
+      {/* Name + number */}
+      <div className="flex-1 min-w-0" style={{ textAlign: isLeft ? "left" : "right" }}>
+        <div className="text-white text-xs font-bold font-arabic truncate leading-tight">
+          {player.name}
+        </div>
+        <div
+          className="flex items-center gap-1 mt-0.5"
+          style={{ justifyContent: isLeft ? "flex-start" : "flex-end" }}
+        >
           <span
-            className="text-[10px] font-bold text-white px-1.5 py-0.5 rounded"
+            className="text-[10px] font-black text-white px-1.5 py-px rounded"
             style={{ backgroundColor: primaryColor }}
           >
             {player.number ?? "—"}
           </span>
-          {isPlaced && <span className="w-1.5 h-1.5 rounded-full bg-green-400" />}
+          {isPlaced && (
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+          )}
         </div>
       </div>
     </div>
