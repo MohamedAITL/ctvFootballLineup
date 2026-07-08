@@ -5,6 +5,7 @@ import {
   useListTeamPlayers, 
   useCreatePlayer, 
   useUpdatePlayer,
+  useUpdateTeam,
   useDeletePlayer, 
   getGetTeamQueryKey,
   getListTeamPlayersQueryKey 
@@ -73,6 +74,31 @@ export default function TeamDetail() {
             <h1 className="text-5xl font-arabic font-bold mb-2">{team.nameAr}</h1>
             <p className="text-white/50 text-xl tracking-widest uppercase">{team.name}</p>
           </div>
+        </div>
+
+        {/* Coach section */}
+        <div className="mb-8 p-5 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div
+              className="w-14 h-14 rounded-full shrink-0 flex items-center justify-center overflow-hidden border-2"
+              style={{ borderColor: team.primaryColor || "#fff3", background: `${team.primaryColor || "#fff"}22` }}
+            >
+              {team.coachImageUrl ? (
+                <img src={team.coachImageUrl} alt={team.coachName || "Coach"} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-white/40 text-xl font-bold">
+                  {team.coachName ? team.coachName.charAt(0) : "؟"}
+                </span>
+              )}
+            </div>
+            <div>
+              <p className="text-white/40 text-[10px] tracking-widest uppercase font-bold mb-0.5">المدرب / Coach</p>
+              <p className="text-white font-arabic font-bold text-lg">
+                {team.coachName || <span className="text-white/30 text-sm">لم يُضف بعد</span>}
+              </p>
+            </div>
+          </div>
+          <EditCoachDialog team={team} />
         </div>
 
         <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-4">
@@ -232,6 +258,82 @@ function EditPlayerDialog({ teamId, player, onClose }: { teamId: number, player:
           <div className="pt-4 flex justify-end">
             <Button type="submit" disabled={updatePlayer.isPending} className="bg-primary hover:bg-primary/90 font-arabic">
               {updatePlayer.isPending ? "جاري الحفظ..." : "حفظ"}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function EditCoachDialog({ team }: { team: { id: number; coachName?: string | null; coachImageUrl?: string | null; primaryColor?: string | null } }) {
+  const [open, setOpen] = useState(false);
+  const updateTeam = useUpdateTeam();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const [formData, setFormData] = useState({
+    coachName: team.coachName || "",
+    coachImageUrl: team.coachImageUrl || "",
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateTeam.mutate({
+      id: team.id,
+      data: {
+        coachName: formData.coachName || null,
+        coachImageUrl: formData.coachImageUrl || null,
+      } as Parameters<typeof updateTeam.mutate>[0]["data"],
+    }, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: getGetTeamQueryKey(team.id) });
+        setOpen(false);
+        toast({ title: "Coach updated" });
+      },
+    });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" className="border-white/15 text-white hover:bg-white/10 font-arabic gap-2">
+          <Edit className="w-4 h-4" /> تعديل المدرب
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="bg-[#111] border-white/10 text-white font-arabic">
+        <DialogHeader>
+          <DialogTitle className="text-2xl">بيانات المدرب</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4 pt-4 font-sans">
+          <div className="space-y-2">
+            <Label className="font-arabic text-white/70">اسم المدرب</Label>
+            <Input
+              value={formData.coachName}
+              onChange={e => setFormData({ ...formData, coachName: e.target.value })}
+              className="bg-black/50 border-white/10 text-right font-arabic"
+              dir="rtl"
+              placeholder="مثال: وليد الركراكي"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="font-arabic text-white/70">رابط صورة المدرب</Label>
+            <Input
+              value={formData.coachImageUrl}
+              onChange={e => setFormData({ ...formData, coachImageUrl: e.target.value })}
+              className="bg-black/50 border-white/10 text-left"
+              dir="ltr"
+              placeholder="https://..."
+            />
+            {formData.coachImageUrl && (
+              <div className="flex justify-center pt-1">
+                <img src={formData.coachImageUrl} alt="preview" className="w-16 h-16 rounded-full object-cover border-2 border-white/10" />
+              </div>
+            )}
+          </div>
+          <div className="pt-4 flex justify-end">
+            <Button type="submit" disabled={updateTeam.isPending} className="bg-primary hover:bg-primary/90 font-arabic">
+              {updateTeam.isPending ? "جاري الحفظ..." : "حفظ"}
             </Button>
           </div>
         </form>

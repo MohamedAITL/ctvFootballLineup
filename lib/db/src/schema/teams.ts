@@ -10,6 +10,8 @@ export const teamsTable = pgTable("teams", {
   logoUrl: text("logo_url"),
   primaryColor: text("primary_color"),
   secondaryColor: text("secondary_color"),
+  coachName: text("coach_name"),
+  coachImageUrl: text("coach_image_url"),
 });
 
 export const insertTeamSchema = createInsertSchema(teamsTable).omit({ id: true });

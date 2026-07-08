@@ -17,4 +17,8 @@ export interface Team {
   primaryColor?: string | null;
   /** @nullable */
   secondaryColor?: string | null;
+  /** @nullable */
+  coachName?: string | null;
+  /** @nullable */
+  coachImageUrl?: string | null;
 }

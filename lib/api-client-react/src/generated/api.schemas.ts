@@ -20,6 +20,10 @@ export interface Team {
   primaryColor?: string | null;
   /** @nullable */
   secondaryColor?: string | null;
+  /** @nullable */
+  coachName?: string | null;
+  /** @nullable */
+  coachImageUrl?: string | null;
 }
 
 export interface TeamInput {
@@ -32,6 +36,10 @@ export interface TeamInput {
   primaryColor?: string | null;
   /** @nullable */
   secondaryColor?: string | null;
+  /** @nullable */
+  coachName?: string | null;
+  /** @nullable */
+  coachImageUrl?: string | null;
 }
 
 export interface Player {

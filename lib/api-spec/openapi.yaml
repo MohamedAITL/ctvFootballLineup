@@ -260,6 +260,10 @@ components:
           type: ["string", "null"]
         secondaryColor:
           type: ["string", "null"]
+        coachName:
+          type: ["string", "null"]
+        coachImageUrl:
+          type: ["string", "null"]
 
     TeamInput:
       type: object
@@ -276,6 +280,10 @@ components:
         primaryColor:
           type: ["string", "null"]
         secondaryColor:
+          type: ["string", "null"]
+        coachName:
+          type: ["string", "null"]
+        coachImageUrl:
           type: ["string", "null"]
 
     Player:

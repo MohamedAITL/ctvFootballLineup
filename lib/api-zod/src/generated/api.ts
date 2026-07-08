@@ -27,7 +27,9 @@ export const ListTeamsResponseItem = zod.object({
   "slug": zod.string(),
   "logoUrl": zod.string().nullish(),
   "primaryColor": zod.string().nullish(),
-  "secondaryColor": zod.string().nullish()
+  "secondaryColor": zod.string().nullish(),
+  "coachName": zod.string().nullish(),
+  "coachImageUrl": zod.string().nullish()
 })
 export const ListTeamsResponse = zod.array(ListTeamsResponseItem)
 
@@ -41,7 +43,9 @@ export const CreateTeamBody = zod.object({
   "slug": zod.string(),
   "logoUrl": zod.string().nullish(),
   "primaryColor": zod.string().nullish(),
-  "secondaryColor": zod.string().nullish()
+  "secondaryColor": zod.string().nullish(),
+  "coachName": zod.string().nullish(),
+  "coachImageUrl": zod.string().nullish()
 })
 
 export const CreateTeamResponse = zod.object({
@@ -51,7 +55,9 @@ export const CreateTeamResponse = zod.object({
   "slug": zod.string(),
   "logoUrl": zod.string().nullish(),
   "primaryColor": zod.string().nullish(),
-  "secondaryColor": zod.string().nullish()
+  "secondaryColor": zod.string().nullish(),
+  "coachName": zod.string().nullish(),
+  "coachImageUrl": zod.string().nullish()
 })
 
 
@@ -69,7 +75,9 @@ export const GetTeamResponse = zod.object({
   "slug": zod.string(),
   "logoUrl": zod.string().nullish(),
   "primaryColor": zod.string().nullish(),
-  "secondaryColor": zod.string().nullish()
+  "secondaryColor": zod.string().nullish(),
+  "coachName": zod.string().nullish(),
+  "coachImageUrl": zod.string().nullish()
 })
 
 
@@ -86,7 +94,9 @@ export const UpdateTeamBody = zod.object({
   "slug": zod.string(),
   "logoUrl": zod.string().nullish(),
   "primaryColor": zod.string().nullish(),
-  "secondaryColor": zod.string().nullish()
+  "secondaryColor": zod.string().nullish(),
+  "coachName": zod.string().nullish(),
+  "coachImageUrl": zod.string().nullish()
 })
 
 export const UpdateTeamResponse = zod.object({
@@ -96,7 +106,9 @@ export const UpdateTeamResponse = zod.object({
   "slug": zod.string(),
   "logoUrl": zod.string().nullish(),
   "primaryColor": zod.string().nullish(),
-  "secondaryColor": zod.string().nullish()
+  "secondaryColor": zod.string().nullish(),
+  "coachName": zod.string().nullish(),
+  "coachImageUrl": zod.string().nullish()
 })
 
 
