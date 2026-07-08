@@ -88,15 +88,20 @@ export default function LineupView() {
   }, []);
 
   useEffect(() => {
-    const DRAG_THRESHOLD = 8;
+    const DRAG_THRESHOLD = 14;
     const onMove = (e: PointerEvent) => {
       const ds = dragStateRef.current;
       if (!ds) return;
-      // Create ghost only after finger has moved enough (prevents ghost on scroll)
       if (!ghostRef.current) {
         const dx = e.clientX - ds.startX;
         const dy = e.clientY - ds.startY;
-        if (Math.sqrt(dx * dx + dy * dy) < DRAG_THRESHOLD) return;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < DRAG_THRESHOLD) return;
+        // Vertical-dominant movement = scroll → cancel drag entirely
+        if (Math.abs(dy) > Math.abs(dx)) {
+          dragStateRef.current = null;
+          return;
+        }
         createGhost(ds.player, ds.teamColor, e.clientX, e.clientY);
         return;
       }
@@ -121,9 +126,8 @@ export default function LineupView() {
   }, [dropOnPitch, removeGhost, createGhost]);
 
   const startDrag = useCallback((player: Player, teamColor: string, e: React.PointerEvent) => {
-    e.preventDefault();
+    // No preventDefault — lets the browser keep scroll control with pan-y
     dragStateRef.current = { player, teamColor, startX: e.clientX, startY: e.clientY };
-    // Ghost is created in onMove once threshold is crossed
   }, []);
 
   const movePlacedPlayer = useCallback((playerId: number, x: number, y: number) => {
