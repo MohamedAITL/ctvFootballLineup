@@ -415,7 +415,7 @@ function PlayerCard({
       onPointerDown={(e) => onDragStart(player, primaryColor, e)}
       className="relative select-none cursor-grab active:cursor-grabbing group rounded-2xl overflow-hidden"
       style={{
-        touchAction: "none",
+        touchAction: "pan-y",
         opacity: isPlaced ? 0.28 : 1,
         transition: "opacity 0.2s, transform 0.15s",
         background: `linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.35) 100%)`,
