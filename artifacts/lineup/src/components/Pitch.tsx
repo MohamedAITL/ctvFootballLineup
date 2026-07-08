@@ -13,7 +13,6 @@ export const Pitch = forwardRef<HTMLDivElement, PitchProps>(function Pitch(
 ) {
   const tokenDragRef = useRef<{ playerId: number; startX: number; startY: number } | null>(null);
   const innerRef = useRef<HTMLDivElement>(null);
-
   const resolvedRef = (ref as React.RefObject<HTMLDivElement>) || innerRef;
 
   const startTokenDrag = useCallback(
@@ -47,8 +46,7 @@ export const Pitch = forwardRef<HTMLDivElement, PitchProps>(function Pitch(
       tokenDragRef.current = null;
       const dx = e.clientX - td.startX;
       const dy = e.clientY - td.startY;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 5) {
+      if (Math.sqrt(dx * dx + dy * dy) < 5) {
         onRemovePlaced?.(td.playerId);
       }
     },
@@ -58,39 +56,49 @@ export const Pitch = forwardRef<HTMLDivElement, PitchProps>(function Pitch(
   return (
     <div
       ref={resolvedRef}
-      className="relative w-full h-full bg-[#1b4d24] overflow-hidden border-2 border-white/20 rounded-lg shadow-2xl isolate"
+      className="absolute inset-0 bg-[#1b4d24] overflow-hidden"
       onPointerMove={moveToken}
       onPointerUp={endTokenDrag}
     >
       {/* Grass stripes */}
       <div className="absolute inset-0 flex flex-col pointer-events-none">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div key={i} className={`flex-1 ${i % 2 === 0 ? "bg-[#1f592a]" : "bg-[#1b4d24]"}`} />
+        {Array.from({ length: 16 }).map((_, i) => (
+          <div key={i} className={`flex-1 ${i % 2 === 0 ? "bg-[#1f5a28]" : "bg-[#1b4d24]"}`} />
         ))}
       </div>
 
+      {/* Field lines */}
       <svg
         viewBox="0 0 100 150"
-        className="absolute inset-0 w-full h-full opacity-80 pointer-events-none"
+        className="absolute inset-0 w-full h-full pointer-events-none"
         preserveAspectRatio="none"
+        style={{ opacity: 0.75 }}
       >
-        <g stroke="white" strokeWidth="0.5" fill="none">
-          <rect x="2" y="2" width="96" height="146" />
-          <line x1="2" y1="75" x2="98" y2="75" />
-          <circle cx="50" cy="75" r="10" />
-          <circle cx="50" cy="75" r="0.5" fill="white" />
-          <rect x="25" y="2" width="50" height="20" />
-          <rect x="38" y="2" width="24" height="6" />
-          <circle cx="50" cy="14" r="0.5" fill="white" />
-          <path d="M 41.5 22 A 10 10 0 0 0 58.5 22" />
-          <rect x="25" y="128" width="50" height="20" />
-          <rect x="38" y="142" width="24" height="6" />
-          <circle cx="50" cy="136" r="0.5" fill="white" />
-          <path d="M 41.5 128 A 10 10 0 0 1 58.5 128" />
-          <path d="M 2 5 A 3 3 0 0 0 5 2" />
-          <path d="M 98 5 A 3 3 0 0 1 95 2" />
-          <path d="M 2 145 A 3 3 0 0 1 5 148" />
-          <path d="M 98 145 A 3 3 0 0 0 95 148" />
+        <g stroke="rgba(255,255,255,0.85)" strokeWidth="0.45" fill="none">
+          {/* Outer boundary */}
+          <rect x="3" y="3" width="94" height="144" />
+          {/* Midfield line */}
+          <line x1="3" y1="75" x2="97" y2="75" />
+          {/* Center circle */}
+          <circle cx="50" cy="75" r="11" />
+          <circle cx="50" cy="75" r="0.6" fill="rgba(255,255,255,0.85)" />
+          {/* Top penalty area */}
+          <rect x="22" y="3" width="56" height="22" />
+          {/* Top goal area */}
+          <rect x="36" y="3" width="28" height="7" />
+          <circle cx="50" cy="16" r="0.6" fill="rgba(255,255,255,0.85)" />
+          <path d="M 40 25 A 11 11 0 0 0 60 25" />
+          {/* Bottom penalty area */}
+          <rect x="22" y="125" width="56" height="22" />
+          {/* Bottom goal area */}
+          <rect x="36" y="140" width="28" height="7" />
+          <circle cx="50" cy="134" r="0.6" fill="rgba(255,255,255,0.85)" />
+          <path d="M 40 125 A 11 11 0 0 1 60 125" />
+          {/* Corner arcs */}
+          <path d="M 3 6.5 A 3.5 3.5 0 0 0 6.5 3" />
+          <path d="M 97 6.5 A 3.5 3.5 0 0 1 93.5 3" />
+          <path d="M 3 143.5 A 3.5 3.5 0 0 1 6.5 147" />
+          <path d="M 97 143.5 A 3.5 3.5 0 0 0 93.5 147" />
         </g>
       </svg>
 
@@ -106,10 +114,12 @@ export const Pitch = forwardRef<HTMLDivElement, PitchProps>(function Pitch(
         />
       ))}
 
-      {/* Hint text when empty */}
+      {/* Empty pitch hint */}
       {placedPlayers.length === 0 && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span className="text-white/20 text-sm font-sans select-none">Drag players onto the pitch</span>
+          <span className="text-white/20 text-base font-sans tracking-wide select-none">
+            Drag players onto the pitch
+          </span>
         </div>
       )}
     </div>
@@ -123,7 +133,7 @@ function PlayerToken({
   y,
   onPointerDown,
 }: {
-  player: { id: number; name: string; number?: number | null; imageUrl?: string | null };
+  player: PlacedPlayer["player"];
   teamColor: string;
   x: number;
   y: number;
@@ -146,27 +156,44 @@ function PlayerToken({
         zIndex: 20,
       }}
       onPointerDown={(e) => onPointerDown(player.id, e)}
-      title={`${player.name} — tap to remove`}
+      title={player.name}
     >
+      {/* Big photo / initials circle */}
       <div
-        className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-xl border-2 border-white/80 overflow-hidden"
-        style={{ backgroundColor: teamColor }}
+        className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center font-bold text-white shadow-2xl"
+        style={{
+          backgroundColor: teamColor,
+          border: "3px solid rgba(255,255,255,0.9)",
+          boxShadow: `0 4px 20px rgba(0,0,0,0.6), 0 0 0 1px ${teamColor}`,
+        }}
       >
         {player.imageUrl ? (
           <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover" />
         ) : (
-          <span className="font-sans text-xs">{player.number ?? initials}</span>
+          <span className="font-arabic text-base">{initials}</span>
         )}
       </div>
-      <span
-        className="mt-1 text-white text-[10px] font-bold font-sans px-1 py-0.5 rounded leading-none whitespace-nowrap max-w-[64px] overflow-hidden text-ellipsis"
+
+      {/* Number badge */}
+      <div
+        className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-md"
+        style={{ backgroundColor: teamColor, border: "1.5px solid white" }}
+      >
+        {player.number ?? "?"}
+      </div>
+
+      {/* Name label */}
+      <div
+        className="mt-1 text-white text-[11px] font-bold font-arabic px-2 py-0.5 rounded-full leading-none whitespace-nowrap max-w-[80px] overflow-hidden text-ellipsis text-center"
         style={{
-          background: "rgba(0,0,0,0.65)",
-          textShadow: "0 1px 2px rgba(0,0,0,0.8)",
+          background: "rgba(0,0,0,0.7)",
+          backdropFilter: "blur(4px)",
+          textShadow: "0 1px 3px rgba(0,0,0,1)",
+          border: "1px solid rgba(255,255,255,0.15)",
         }}
       >
-        {player.name.split(" ")[0]}
-      </span>
+        {player.name.split(" ").slice(0, 2).join(" ")}
+      </div>
     </div>
   );
 }

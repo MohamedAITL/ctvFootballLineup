@@ -3,7 +3,6 @@ import { useListTeams, useListTeamPlayers, getListTeamPlayersQueryKey } from "@w
 import type { Team, Player } from "@workspace/api-client-react";
 import { Pitch } from "@/components/Pitch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Navigation } from "@/components/Navigation";
 
 export type PlacedPlayer = {
@@ -86,8 +85,8 @@ export default function LineupView() {
       "position:fixed",
       "pointer-events:none",
       "z-index:9999",
-      "width:44px",
-      "height:44px",
+      "width:56px",
+      "height:56px",
       "border-radius:50%",
       `background:${teamColor}`,
       "color:white",
@@ -95,14 +94,13 @@ export default function LineupView() {
       "align-items:center",
       "justify-content:center",
       "font-weight:700",
-      "font-size:13px",
+      "font-size:14px",
       "font-family:sans-serif",
       "transform:translate(-50%,-50%)",
       `left:${e.clientX}px`,
       `top:${e.clientY}px`,
-      "box-shadow:0 4px 24px rgba(0,0,0,0.6)",
-      "border:2px solid rgba(255,255,255,0.8)",
-      "transition:none",
+      "box-shadow:0 6px 32px rgba(0,0,0,0.7)",
+      "border:3px solid rgba(255,255,255,0.9)",
       "opacity:0.95",
     ].join(";");
     ghost.textContent = player.number?.toString() || player.name[0];
@@ -127,7 +125,7 @@ export default function LineupView() {
 
   if (isLoadingTeams) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="h-screen w-screen bg-[#1b4d24] flex items-center justify-center">
         <div className="text-white/50 text-xl font-arabic">جاري التحميل...</div>
       </div>
     );
@@ -135,7 +133,7 @@ export default function LineupView() {
 
   if (teams.length === 0) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center gap-4">
+      <div className="h-screen w-screen bg-[#0a0a0a] flex flex-col items-center justify-center gap-4">
         <Navigation />
         <h1 className="text-3xl font-arabic text-white">لا توجد فرق</h1>
         <p className="text-white/50 text-xl">No teams yet</p>
@@ -144,39 +142,62 @@ export default function LineupView() {
   }
 
   return (
-    <div className="h-screen w-screen bg-[#0a0a0a] overflow-hidden flex flex-col font-sans relative">
-      <Navigation />
+    <div className="h-screen w-screen overflow-hidden relative">
+      {/* Pitch fills the entire screen */}
+      <Pitch
+        ref={pitchRef}
+        placedPlayers={Object.values(placedPlayers)}
+        onMovePlaced={movePlacedPlayer}
+        onRemovePlaced={removePlacedPlayer}
+      />
 
-      <header className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black/80 to-transparent z-10 flex items-start justify-between px-8 pt-4">
-        <div className="w-64">
+      {/* Navigation */}
+      <div className="absolute top-3 right-4 z-30">
+        <Navigation />
+      </div>
+
+      {/* Team selectors */}
+      <div className="absolute top-3 left-[22%] right-[22%] z-30 flex justify-center gap-8 px-8">
+        <div className="w-52">
           <TeamSelector value={team1Id} onChange={setTeam1Id} teams={teams} />
         </div>
-        <div className="w-64">
+        <div className="w-52">
           <TeamSelector value={team2Id} onChange={setTeam2Id} teams={teams} />
         </div>
-      </header>
+      </div>
 
-      <main className="flex-1 flex w-full h-full relative isolate">
-        <TeamPanel team={team1} side="left" onDragStart={startDrag} placedIds={placedPlayers} />
-        <div className="flex-1 h-full flex items-center justify-center p-8 z-0">
-          <Pitch
-            ref={pitchRef}
-            placedPlayers={Object.values(placedPlayers)}
-            onMovePlaced={movePlacedPlayer}
-            onRemovePlaced={removePlacedPlayer}
-          />
-        </div>
-        <TeamPanel team={team2} side="right" onDragStart={startDrag} placedIds={placedPlayers} />
-      </main>
+      {/* Left panel — Team 1 */}
+      <TeamPanel
+        team={team1}
+        side="left"
+        onDragStart={startDrag}
+        placedIds={placedPlayers}
+      />
+
+      {/* Right panel — Team 2 */}
+      <TeamPanel
+        team={team2}
+        side="right"
+        onDragStart={startDrag}
+        placedIds={placedPlayers}
+      />
     </div>
   );
 }
 
-function TeamSelector({ value, onChange, teams }: { value: number | null; onChange: (id: number) => void; teams: Team[] }) {
+function TeamSelector({
+  value,
+  onChange,
+  teams,
+}: {
+  value: number | null;
+  onChange: (id: number) => void;
+  teams: Team[];
+}) {
   if (!value) return null;
   return (
     <Select value={value.toString()} onValueChange={(val) => onChange(Number(val))}>
-      <SelectTrigger className="bg-black/50 border-white/10 text-white font-arabic h-12">
+      <SelectTrigger className="bg-black/60 backdrop-blur border-white/20 text-white font-arabic h-10 text-sm">
         <SelectValue placeholder="اختر الفريق" />
       </SelectTrigger>
       <SelectContent className="bg-[#111] border-white/10 text-white font-arabic">
@@ -216,51 +237,63 @@ function TeamPanel({
     return grouped;
   }, [players]);
 
-  if (!team) {
-    return <div className={`w-[25%] h-full z-10 flex flex-col bg-black/60 backdrop-blur-md`} />;
-  }
+  const primaryColor = team?.primaryColor || "#1b4d24";
 
-  const primaryColor = team.primaryColor || "#1b4d24";
-  const bgGradient =
-    side === "left"
-      ? `linear-gradient(to right, ${primaryColor}40, transparent)`
-      : `linear-gradient(to left, ${primaryColor}40, transparent)`;
+  const panelStyle: React.CSSProperties = {
+    position: "absolute",
+    top: 0,
+    [side]: 0,
+    width: "21%",
+    height: "100%",
+    zIndex: 20,
+    display: "flex",
+    flexDirection: "column",
+    background: side === "left"
+      ? `linear-gradient(to right, rgba(0,0,0,0.82) 70%, transparent)`
+      : `linear-gradient(to left, rgba(0,0,0,0.82) 70%, transparent)`,
+  };
 
   return (
-    <div
-      className={`w-[25%] h-full z-10 flex flex-col bg-black/70 backdrop-blur-md border-${side === "left" ? "r" : "l"} border-white/10`}
-      style={{ backgroundImage: bgGradient }}
-    >
-      <div className="p-8 flex flex-col items-center justify-center border-b border-white/10" style={{ borderColor: `${primaryColor}40` }}>
-        <div className="w-24 h-24 rounded-full bg-white/5 p-2 mb-4 shadow-2xl flex items-center justify-center overflow-hidden">
-          {team.logoUrl ? (
-            <img src={team.logoUrl} alt={team.name} className="w-full h-full object-contain" />
-          ) : (
-            <span className="text-3xl font-arabic text-white/50">{team.nameAr[0]}</span>
-          )}
+    <div style={panelStyle}>
+      {/* Team header */}
+      {team && (
+        <div className="flex flex-col items-center pt-14 pb-3 px-3 border-b border-white/10">
+          <div
+            className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden mb-2 shadow-xl"
+            style={{ background: `${primaryColor}33`, border: `2px solid ${primaryColor}66` }}
+          >
+            {team.logoUrl ? (
+              <img src={team.logoUrl} alt={team.name} className="w-10 h-10 object-contain" />
+            ) : (
+              <span className="text-2xl font-arabic text-white">{team.nameAr[0]}</span>
+            )}
+          </div>
+          <h2 className="text-lg font-arabic font-bold text-white text-center leading-tight">{team.nameAr}</h2>
+          <p className="text-[10px] text-white/40 tracking-widest uppercase">{team.name}</p>
         </div>
-        <h2 className="text-3xl font-arabic font-bold text-white text-center leading-tight drop-shadow-lg">{team.nameAr}</h2>
-        <h3 className="text-sm font-sans text-white/60 tracking-widest uppercase mt-2">{team.name}</h3>
-      </div>
+      )}
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide">
-        {players.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-white/40">
-            <span className="font-arabic text-xl mb-2">لا يوجد لاعبون</span>
-            <span className="font-sans">No players</span>
+      {/* Players */}
+      <div className="flex-1 overflow-y-auto py-2 scrollbar-hide">
+        {!team ? null : players.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-white/30 text-sm font-arabic">
+            لا يوجد لاعبون
           </div>
         ) : (
           POSITIONS.map((pos) => {
             const posPlayers = groupedPlayers[pos as keyof typeof groupedPlayers];
             if (posPlayers.length === 0) return null;
             return (
-              <div key={pos} className="space-y-3">
-                <h4 className="text-xs font-sans font-bold text-white/30 tracking-widest uppercase border-b border-white/5 pb-1 mb-2">{pos}</h4>
+              <div key={pos} className="mb-1">
+                <div className="px-3 py-1">
+                  <span className="text-[9px] font-bold text-white/30 tracking-widest uppercase">{pos}</span>
+                </div>
                 {posPlayers.map((p) => (
-                  <PlayerRow
+                  <PlayerCard
                     key={p.id}
                     player={p}
                     primaryColor={primaryColor}
+                    side={side}
                     onDragStart={onDragStart}
                     isPlaced={!!placedIds[p.id]}
                   />
@@ -274,47 +307,61 @@ function TeamPanel({
   );
 }
 
-function PlayerRow({
+function PlayerCard({
   player,
   primaryColor,
+  side,
   onDragStart,
   isPlaced,
 }: {
   player: Player;
   primaryColor: string;
+  side: "left" | "right";
   onDragStart: (player: Player, teamColor: string, e: React.PointerEvent) => void;
   isPlaced: boolean;
 }) {
+  const initials = player.name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("");
+
   return (
     <div
       onPointerDown={(e) => onDragStart(player, primaryColor, e)}
       className={[
-        "flex items-center gap-4 p-2 rounded-lg border transition-colors select-none",
-        "cursor-grab active:cursor-grabbing",
+        "flex items-center gap-2 mx-2 mb-1 px-2 py-2 rounded-lg select-none cursor-grab active:cursor-grabbing transition-all",
         isPlaced
-          ? "bg-white/3 border-white/20 opacity-50"
-          : "bg-white/5 hover:bg-white/10 border-white/5 hover:border-white/15",
+          ? "opacity-40 bg-white/5"
+          : "bg-black/40 hover:bg-black/60 border border-white/10 hover:border-white/20",
       ].join(" ")}
-      style={{ touchAction: "none" }}
+      style={{ touchAction: "none", flexDirection: side === "right" ? "row-reverse" : "row" }}
     >
+      {/* Big photo */}
       <div
-        className="w-8 h-8 rounded flex items-center justify-center font-sans font-bold text-sm text-white shadow-lg shrink-0"
-        style={{ backgroundColor: primaryColor }}
+        className="w-12 h-12 rounded-lg overflow-hidden shrink-0 flex items-center justify-center font-bold text-white text-sm shadow-md"
+        style={{ backgroundColor: primaryColor, border: `1.5px solid ${primaryColor}88` }}
       >
-        {player.number || "-"}
+        {player.imageUrl ? (
+          <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover" />
+        ) : (
+          <span className="font-arabic text-base">{initials}</span>
+        )}
       </div>
-      <Avatar className="w-10 h-10 border border-white/20 shrink-0">
-        <AvatarImage src={player.imageUrl || undefined} />
-        <AvatarFallback className="bg-white/10 text-white font-arabic text-xs">
-          {player.name[0]}
-        </AvatarFallback>
-      </Avatar>
-      <div className="flex-1 min-w-0">
-        <div className="text-white font-arabic font-bold truncate text-lg leading-none">{player.name}</div>
+
+      {/* Info */}
+      <div className="flex-1 min-w-0" style={{ textAlign: side === "right" ? "right" : "left" }}>
+        <div className="text-white font-bold text-sm leading-tight truncate font-arabic">{player.name}</div>
+        <div className="flex items-center gap-1 mt-0.5" style={{ justifyContent: side === "right" ? "flex-end" : "flex-start" }}>
+          <span
+            className="text-[10px] font-bold text-white px-1.5 py-0.5 rounded"
+            style={{ backgroundColor: primaryColor }}
+          >
+            {player.number ?? "—"}
+          </span>
+          {isPlaced && <span className="w-1.5 h-1.5 rounded-full bg-green-400" />}
+        </div>
       </div>
-      {isPlaced && (
-        <div className="w-2 h-2 rounded-full bg-green-400 shrink-0" title="On pitch" />
-      )}
     </div>
   );
 }
