@@ -1,5 +1,5 @@
 {
-  "version": "2026.07.11",
+  "version": "2026.07.19",
   "teams": [
     {
       "id": 3,
@@ -41,7 +41,9 @@
       "slug": "spain",
       "logoUrl": "https://imagecache.365scores.com/image/upload/f_png,w_64,h_64,c_limit,q_auto:eco,dpr_2,d_Competitors:default1.png/v3/Competitors/5050",
       "primaryColor": "#f1bf1b",
-      "secondaryColor": "#f1bf00"
+      "secondaryColor": "#f1bf00",
+      "coachName": "لويس دي لا فوينتي",
+      "coachImageUrl": "https://imagecache.365scores.com/image/upload/f_png,w_80,h_80,c_limit,q_auto:eco,dpr_2,d_Athletes:68240.png,r_max,c_thumb,g_face,z_0.65/Athletes/NationalTeam/68240"
     },
     {
       "id": 9,
